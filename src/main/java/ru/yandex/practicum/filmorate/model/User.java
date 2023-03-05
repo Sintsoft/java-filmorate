@@ -16,7 +16,6 @@ public class User {
     
     private int id;
 
-    @NotBlank(message = "Имя не должно быть пустым")
     private String name;
 
     @NonNull
@@ -30,5 +29,13 @@ public class User {
     @NonNull
     @Past(message =  "Дата рождения не может быть позже чем вчера")
     private LocalDate birthday;
+
+    public void setName(String name) {
+        if (name.isBlank()) {
+            this.name = this.login;
+        } else {
+            this.name = name;
+        }
+    }
 
 }
