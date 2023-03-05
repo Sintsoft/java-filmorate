@@ -15,7 +15,6 @@ import ru.yandex.practicum.filmorate.utility.constraints.FilmReleaseConstraint;
 @AllArgsConstructor
 public class Film {
     
-    @Min(1)
     private int id;
 
     @Min(1)
