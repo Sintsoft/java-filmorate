@@ -42,6 +42,10 @@ public class FilmController {
             log.info("Wrong film add method");
             throw new ValidationException("Wrong method");
         }
+        if (film.getDuration() <= 0) {
+            log.info("Duration must be positive");
+            throw new ValidationException("Duration must be positive");
+        }
         film.setId(filmIdIterator++);
         films.put(film.getId(), film);
         return film;
@@ -55,10 +59,15 @@ public class FilmController {
             throw new ValidationException("Null film data");
         }
         if (!films.containsKey(film.getId())) {
-            log.info("failse id PUT film");
+            log.info("Not existing id PUT film");
             throw new ValidationException("Id is out of range");
+        }
+        if (film.getDuration() <= 0) {
+            log.info("Duration must be positive");
+            throw new ValidationException("Duration must be positive");
         }
         films.put(film.getId(), film);
         return film;
     }
+
 }
