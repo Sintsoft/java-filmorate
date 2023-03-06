@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controllers;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,25 +15,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.SneakyThrows;
 
-import static org.mockito.Mockito.when;
-
 import java.net.URI;
-import java.time.Duration;
 import java.time.LocalDate;
 
-import ru.yandex.practicum.filmorate.controllers.FilmController;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.controllers.UserController;
+import ru.yandex.practicum.filmorate.model.User;
 
 @WebMvcTest
-public class FilmControllerTests {
+public class UserControllerTests {
     
     @MockBean
-    private FilmController filmController;
+    private UserController userController;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -42,9 +39,8 @@ public class FilmControllerTests {
 
     @SneakyThrows
     @Test
-    void nullFilmTest() {
-
-        mockMvc.perform(post("/films", URI.create("/films"))
+    void nullUserCreationTest() {
+        mockMvc.perform(post("/users", URI.create("/films"))
                     .contentType("application/json")
                     .content(objectMapper.writeValueAsString(null)))
                 .andExpect(status().isBadRequest());
@@ -52,23 +48,27 @@ public class FilmControllerTests {
 
     @SneakyThrows
     @Test
-    void normalFilmTest() {
-        Film film = new Film(0, Duration.ofMinutes(90), "Test film", null, LocalDate.of(1995, 6, 1));
+    void normalUserCreationTest() {
 
-        mockMvc.perform(post("/films", URI.create("/films"))
+        User user = new User(0, "Name", "login", "mail@mail.ru", LocalDate.of(1999, 1, 1));
+
+        mockMvc.perform(post("/users", URI.create("/films"))
                     .contentType("application/json")
-                    .content(objectMapper.writeValueAsString(film)))
+                    .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isOk());
     }
 
     @SneakyThrows
     @Test
-    void invalidDurationFilmTest() {
-        Film film = new Film(0, Duration.ofSeconds(-90), "Test film", null, LocalDate.of(1995, 6, 1));
+    void noNameUserCreationTest() {
 
-        mockMvc.perform(post("/films", URI.create("/films"))
+        User user = new User(0, null, "login", "mail@mail.ru", LocalDate.of(1999, 1, 1));
+
+        mockMvc.perform(post("/users", URI.create("/films"))
                     .contentType("application/json")
-                    .content(objectMapper.writeValueAsString(film)));
-        assertEquals(0, filmController.getAllFilms().size());
+                    .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("login"));
     }
+
 }
