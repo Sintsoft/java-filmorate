@@ -22,7 +22,7 @@ import ru.yandex.practicum.filmorate.utility.exceptions.ValidationException;
 @RequestMapping("/films")
 public class FilmController {
     
-    private Map<Integer, Film> films = new HashMap<>();
+    private final Map<Integer, Film> films = new HashMap<>();
     private int filmIdIterator = 1;
 
     @GetMapping
@@ -39,7 +39,7 @@ public class FilmController {
             throw new ValidationException("Null film data");
         }
         if (films.containsKey(film.getId())) {
-            log.info("Wrong id method");
+            log.info("Wrong film add method");
             throw new ValidationException("Wrong method");
         }
         film.setId(filmIdIterator++);
@@ -54,7 +54,7 @@ public class FilmController {
             log.info("Null film in post request");
             throw new ValidationException("Null film data");
         }
-        if (film.getId() > filmIdIterator - 1) {
+        if (!films.containsKey(film.getId())) {
             log.info("failse id PUT film");
             throw new ValidationException("Id is out of range");
         }

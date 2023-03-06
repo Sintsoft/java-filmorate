@@ -22,7 +22,7 @@ import ru.yandex.practicum.filmorate.utility.exceptions.ValidationException;
 @RequestMapping("/users")
 public class UserController {
 
-    private Map<Integer, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
     private int userIdIterator = 1;;
 
     @GetMapping
@@ -38,7 +38,7 @@ public class UserController {
             log.info("Null user body");
             throw new ValidationException();
         }
-        if (user.getId() != 0) {
+        if (users.containsKey(user.getId())) {
             log.info("Wrong user add method");
             throw new ValidationException("Wrong method");
         }
