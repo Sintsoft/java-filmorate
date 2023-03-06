@@ -30,12 +30,4 @@ public class User {
     @Past(message =  "Дата рождения не может быть позже чем вчера")
     private LocalDate birthday;
 
-    public void setName(String name) {
-        if (name.isBlank()) {
-            this.name = this.login;
-        } else {
-            this.name = name;
-        }
-    }
-
 }

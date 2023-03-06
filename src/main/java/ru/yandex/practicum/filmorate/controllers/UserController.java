@@ -42,6 +42,7 @@ public class UserController {
             log.info("Wrong user add method");
             throw new ValidationException("Wrong method");
         }
+        user = userNameCheck(user);
         user.setId(userIdIterator++);
         users.put(user.getId(), user);
         return user;
@@ -58,7 +59,15 @@ public class UserController {
             log.info("Wrong id method");
             throw new ValidationException("Wrong method");
         }
+        user = userNameCheck(user);
         users.put(user.getId(), user);
+        return user;
+    }
+
+    private User userNameCheck(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
         return user;
     }
 }
