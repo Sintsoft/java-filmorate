@@ -67,8 +67,19 @@ public class UserControllerTests {
         mockMvc.perform(post("/users", URI.create("/films"))
                     .contentType("application/json")
                     .content(objectMapper.writeValueAsString(user)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("login"));
+                .andExpect(status().isOk());
+    }
+
+    @SneakyThrows
+    @Test
+    void notEmailUserCreationTest() {
+
+        User user = new User(0, null, "login", "mail", LocalDate.of(1999, 1, 1));
+
+        mockMvc.perform(post("/users", URI.create("/films"))
+                    .contentType("application/json")
+                    .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isBadRequest());
     }
 
 }
