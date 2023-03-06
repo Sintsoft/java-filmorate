@@ -1,23 +1,24 @@
 package ru.yandex.practicum.filmorate.model;
 
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.ValidationException;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
-public class UserTest {
-
+public class FilmTest {
+    
     @Test
-    void userNullFieldsCreationTest() {
+    void filmNullFieldsCreationTest() {
         Throwable thrown = assertThrows(NullPointerException.class, () -> {
-            new User(0, null, null, null, null);
+            new Film(0, null, null, null, null);
         });
     }
-
 
 }

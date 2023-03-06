@@ -14,7 +14,7 @@ import ru.yandex.practicum.filmorate.utility.validators.FilmReleaseConstraintVal
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy=FilmReleaseConstraintValidator.class)
 public @interface FilmReleaseConstraint {
-    String message() default "Дата выпуска фильмне не можеть быть ранее 10 июня 1895";
+    String message() default "Relase date shoul be after 10.06.1895";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
