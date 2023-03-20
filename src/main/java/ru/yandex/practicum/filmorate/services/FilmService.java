@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 
 @Service
 @Slf4j
@@ -26,6 +27,14 @@ public class FilmService {
         storage.addFilm(film);
         filmIdIterator++; // Итерируем после того как успешно добавили
         log.trace("Film itreator afer add new film = " + filmIdIterator);
+        return film;
+    }
+
+    public Film getFilm(int id) {
+        Film film = storage.getFilm(id);
+        if (film == null) {
+            throw new FilmNotFoundException("Film with id = " + id + " not found");
+        }
         return film;
     }
 
