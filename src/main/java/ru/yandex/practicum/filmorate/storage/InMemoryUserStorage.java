@@ -18,12 +18,12 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void addUser(User user) {
-        if (user.getId() > 0) {
+        if (!users.containsKey(user.getId()) && user.getId() > 0) {
             users.put(
                 user.getId(), user
             );
         } else {
-
+            throw new ValidationException("Add user failed - invaild user");
         }
     }
 

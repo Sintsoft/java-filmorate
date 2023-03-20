@@ -30,9 +30,9 @@ public class UserService {
         return storage.getAllUsers();
     }
 
-    public User updatUser(User user) {
+    public User updateUser(User user) {
         log.trace("Updating user with id = " + userIdIterator);
-        
+        storage.updateUser(user);
         return user;
     }
 

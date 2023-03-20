@@ -27,7 +27,7 @@ public class UserController {
     @GetMapping
     public List<User> getAllUsers() {
         log.trace("Call /users GET request");
-        return List.of();
+        return userService.getAllUsers();
     }
     
     @PostMapping
@@ -55,7 +55,7 @@ public class UserController {
         //     log.info("Wrong id method");
         //     throw new ValidationException("Wrong method");
         // }
-        return userService.addUser(user);
+        return userService.updateUser(user);
     }
 
 }
