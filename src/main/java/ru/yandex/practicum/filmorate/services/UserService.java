@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 @Service
 @Slf4j
@@ -24,6 +25,14 @@ public class UserService {
         storage.addUser(user);
         userIdIterator++; // Итерируем после того как успешно добавили
         log.trace("User itreator afer add new user = " + userIdIterator);
+        return user;
+    }
+
+    public User getUser(int id) {
+        User user = storage.getUser(id);
+        if (user == null) {
+            throw new UserNotFoundException("Can't found user with id: " + id );
+        }
         return user;
     }
 

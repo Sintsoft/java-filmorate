@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.services.FilmService;
-import ru.yandex.practicum.filmorate.utility.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.utility.exceptions.EntityValidationException;
 
 @RestController
 @Slf4j
@@ -38,7 +38,7 @@ public class FilmController {
         log.trace("Call /films PUT request");
         if (film == null) {
             log.info("Null film in post request");
-            throw new ValidationException("Null film data");
+            throw new EntityValidationException("Null film data");
         }
         filmService.addFilm(film);
         return film;
@@ -49,7 +49,7 @@ public class FilmController {
         log.trace("Call /films PUT request");
         if (film == null) {
             log.info("Null film in post request");
-            throw new ValidationException("Null film data");
+            throw new EntityValidationException("Null film data");
         }
         filmService.updateFilm(film);
         return film;
