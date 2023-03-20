@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.services.FilmService;
 import ru.yandex.practicum.filmorate.utility.exceptions.ValidationException;
 
 @RestController
@@ -22,13 +24,13 @@ import ru.yandex.practicum.filmorate.utility.exceptions.ValidationException;
 @RequestMapping("/films")
 public class FilmController {
     
-    private final Map<Integer, Film> films = new HashMap<>();
-    private int filmIdIterator = 1;
+    @Autowired
+    private FilmService filmService;
 
     @GetMapping
     public List<Film> getAllFilms() {
         log.trace("Call /films GET request");
-        return List.copyOf(films.values());
+        return filmService.getAllFilms();
     }
 
     @PostMapping
@@ -38,16 +40,7 @@ public class FilmController {
             log.info("Null film in post request");
             throw new ValidationException("Null film data");
         }
-        if (films.containsKey(film.getId())) {
-            log.info("Wrong film add method");
-            throw new ValidationException("Wrong method");
-        }
-        if (film.getDuration() <= 0) {
-            log.info("Duration must be positive");
-            throw new ValidationException("Duration must be positive");
-        }
-        film.setId(filmIdIterator++);
-        films.put(film.getId(), film);
+        filmService.addFilm(film);
         return film;
     }
 
@@ -58,15 +51,7 @@ public class FilmController {
             log.info("Null film in post request");
             throw new ValidationException("Null film data");
         }
-        if (!films.containsKey(film.getId())) {
-            log.info("Not existing id PUT film");
-            throw new ValidationException("Id is out of range");
-        }
-        if (film.getDuration() <= 0) {
-            log.info("Duration must be positive");
-            throw new ValidationException("Duration must be positive");
-        }
-        films.put(film.getId(), film);
+        filmService.updateFilm(film);
         return film;
     }
 

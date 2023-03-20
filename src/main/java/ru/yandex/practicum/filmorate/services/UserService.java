@@ -20,9 +20,10 @@ public class UserService {
 
     public User addUser(User user) {
         userNameCheck(user);
-        user.setId(userIdIterator++);
-        log.trace("User itreator afer add new user = " + userIdIterator);
+        user.setId(userIdIterator);
         storage.addUser(user);
+        userIdIterator++; // Итерируем после того как успешно добавили
+        log.trace("User itreator afer add new user = " + userIdIterator);
         return user;
     }
 
@@ -31,7 +32,7 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        log.trace("Updating user with id = " + userIdIterator);
+        log.trace("Updating user with id = " + user.getId());
         storage.updateUser(user);
         return user;
     }

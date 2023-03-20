@@ -31,6 +31,8 @@ public class InMemoryUserStorage implements UserStorage {
     public void deleteUser(User user) {
         if (users.containsKey(user.getId())) {
             users.remove(user.getId());
+        } else {
+            throw new ValidationException("Wrong user to delete");
         }
     }
 
