@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorate.services;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,10 +43,44 @@ public class UserService {
         return storage.getAllUsers();
     }
 
+    public List<User> getUserFriends(int userId) {
+        User user = storage.getUser(userId);
+        if (user == null) {
+            throw new UserNotFoundException("Can't find user to make friends");
+        }
+        List<User> friends = new ArrayList<>();
+        for(Integer id : user.getFriends()) {
+            if (storage.getUser(id) != null) {
+                friends.add(storage.getUser(id));
+            }
+        }
+        return friends;
+    }
+
     public User updateUser(User user) {
         log.trace("Updating user with id = " + user.getId());
         storage.updateUser(user);
         return user;
+    }
+
+    public void setFriends(int userId, int friendId) {
+        User user = storage.getUser(userId);
+        User friend = storage.getUser(friendId);
+        if (user == null || friend == null) {
+            throw new UserNotFoundException("Can't find user to make friends");
+        }
+        user.addFriend(friend);
+        friend.addFriend(user);
+    }
+
+    public void unfriendUsers(int userId, int friendId) {
+        User user = storage.getUser(userId);
+        User friend = storage.getUser(friendId);
+        if (user == null || friend == null) {
+            throw new UserNotFoundException("Can't find user to make friends");
+        }
+        user.removeFriend(friend);
+        friend.removeFriend(user);
     }
 
     private User userNameCheck(User user) {
@@ -51,6 +88,22 @@ public class UserService {
             user.setName(user.getLogin());
         }
         return user;
+    }
+
+    public List<User> getUsersCommonFriends(int user1Id, int user2Id) {
+        User user1 = storage.getUser(user1Id);
+        User user2 = storage.getUser(user2Id);
+        Set<Integer> commonFriendsIDs = user1
+            .getFriends()
+            .stream()
+            .distinct()
+            .filter(user2.getFriends()::contains)
+            .collect(Collectors.toSet());
+        List<User> commonFriends = new ArrayList<>();
+        for (Integer id : commonFriendsIDs) {
+            commonFriends.add(storage.getUser(id));
+        }
+        return commonFriends;
     }
 
 }
