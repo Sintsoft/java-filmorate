@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,4 +63,15 @@ public class FilmController {
         return film;
     }
 
+    @PutMapping("/{filmId}/like/{userId}")
+    public void likeFilm(@PathVariable int filmId, @PathVariable int userId) {
+        log.trace("Call /films/{filmId}/like/{userId} PUT request with film=" + filmId + " user=" + userId);
+        filmService.likeFilm(filmId, userId);
+    }
+
+    @DeleteMapping("/{filmId}/like/{userId}")
+    public void dislikeFilm(@PathVariable int filmId, @PathVariable int userId) {
+        log.trace("Call /films/{filmId}/like/{userId} PUT request with film=" + filmId + " user=" + userId);
+        filmService.dislikeFilm(filmId, userId);
+    }
 }

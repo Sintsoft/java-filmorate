@@ -5,13 +5,18 @@ import java.util.List;
 import javax.validation.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 @Service
 @Slf4j
@@ -19,6 +24,10 @@ public class FilmService {
     
     @Autowired
     private FilmStorage storage;
+    
+    @Autowired
+    private UserStorage userStorage;
+
     private int filmIdIterator = 1;
 
     public Film addFilm(Film film) {
@@ -38,7 +47,21 @@ public class FilmService {
         return film;
     }
 
+    public Film likeFilm(int filmId, int userId) {
+        log.trace("User " + userId + " liked film " + filmId);
+        Film film = storage.getFilm(filmId);
+        if (userStorage.getUser(userId) == null ) {
+            throw new UserNotFoundException("User not fond");
+        }
+        if (film == null) {
+            throw new FilmNotFoundException("No such film");
+        }
+        film.likeFilm(userId);
+        return film;
+    }
+
     public List<Film> getAllFilms() {
+        log.trace("Getting all films");
         return storage.getAllFilms();
     }
 
@@ -54,5 +77,17 @@ public class FilmService {
             log.info("Duration must be positive");
             throw new ValidationException("Duration must be positive");
         }
+    }
+
+    public void dislikeFilm(int filmId, int userId) {
+        log.trace("User " + userId + " disliked film " + filmId);
+        Film film = storage.getFilm(filmId);
+        if (userStorage.getUser(userId) == null ) {
+            throw new UserNotFoundException("User not fond");
+        }
+        if (film == null) {
+            throw new FilmNotFoundException("No such film");
+        }
+        film.likeFilm(userId);
     }
 }
