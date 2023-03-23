@@ -1,8 +1,13 @@
 package ru.yandex.practicum.filmorate.services;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.validation.ValidationException;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -89,5 +94,23 @@ public class FilmService {
             throw new FilmNotFoundException("No such film");
         }
         film.likeFilm(userId);
+    }
+
+    public List<Film> getMostLikedFilms(int amount) {        
+        Set<Film> sortedByLikes = new TreeSet<>(new FilmPopularityComparator());
+        sortedByLikes.addAll(storage.getAllFilms());        
+        return sortedByLikes.stream().limit(amount).collect(Collectors.toList());
+    }
+
+    static class FilmPopularityComparator implements Comparator<Film> {
+
+        @Override
+        public int compare(Film o1, Film o2) {
+            int comparsion = o2.getLikes().size() - o1.getLikes().size();
+            if (comparsion == 0) {
+                comparsion = o2.getName().compareTo(o1.getName());
+            }
+            return comparsion;
+        }
     }
 }
