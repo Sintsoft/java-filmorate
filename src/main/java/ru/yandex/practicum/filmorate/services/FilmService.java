@@ -77,6 +77,10 @@ public class FilmService {
 
     public Film updateFilm(Film film) {
         log.trace("Updating user with id = " + film.getId());
+        if (film == null) {
+            log.debug("Got null as film in updateFilm function");
+            throw new NullPayloadObjectException("Nothing in payload");
+        }
         filmCheck(film);
         storage.updateFilm(film);
         return film;

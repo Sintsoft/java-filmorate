@@ -51,10 +51,6 @@ public class FilmController {
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         log.trace("Call /films PUT request");
-        if (film == null) {
-            log.info("Null film in post request");
-            throw new EntityValidationException("Null film data");
-        }
         filmService.addFilm(film);
         return film;
     }
@@ -62,10 +58,6 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.trace("Call /films PUT request");
-        if (film == null) {
-            log.info("Null film in post request");
-            throw new EntityValidationException("Null film data");
-        }
         filmService.updateFilm(film);
         return film;
     }

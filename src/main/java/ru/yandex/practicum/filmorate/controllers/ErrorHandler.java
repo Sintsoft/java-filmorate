@@ -17,11 +17,17 @@ import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleNullPayloadObjectException(final NullPayloadObjectException e) {
+        return new ErrorResponse("Nothing found in payload");
+    }
     
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleSpringValidationError(final ValidationException e) {
-        return new ErrorResponse("Nothing found in payload");
+        return new ErrorResponse("Entity validation exception. " + e.getMessage());
     }
 
     @ExceptionHandler
@@ -42,11 +48,6 @@ public class ErrorHandler {
         return new ErrorResponse("User Not Found");
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNullPayloadObjectException(final NullPayloadObjectException e) {
-        return new ErrorResponse("Nothing found in payload");
-    }
 
     // @ExceptionHandler
     // @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

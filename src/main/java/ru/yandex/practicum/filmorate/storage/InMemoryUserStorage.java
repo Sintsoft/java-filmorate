@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -43,7 +44,7 @@ public class InMemoryUserStorage implements UserStorage {
                 user.getId(), user
             );
         } else {
-            throw new ValidationException("Update canceled. Can't find user with id: " + user.getId());
+            throw new UserNotFoundException("Update canceled. Can't find user with id: " + user.getId());
         }
     }
 

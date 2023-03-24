@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage{
@@ -43,7 +44,7 @@ public class InMemoryFilmStorage implements FilmStorage{
                 film.getId(), film
             );
         } else {
-            throw new ValidationException("Update canceled. Can't find film with id: " + film.getId());
+            throw new FilmNotFoundException("Update canceled. Can't find film with id: " + film.getId());
         }
     }
 
