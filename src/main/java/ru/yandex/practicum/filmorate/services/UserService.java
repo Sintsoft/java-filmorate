@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.utility.exceptions.EntityValidationException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 @Service
@@ -23,6 +24,11 @@ public class UserService {
     private int userIdIterator = 1;
 
     public User addUser(User user) {
+        log.trace("call addUser method with " + user);
+        if (user == null) {
+            log.debug("Got null user");
+            throw new EntityValidationException("Got null user");
+        }
         userNameCheck(user);
         user.setId(userIdIterator);
         storage.addUser(user);
@@ -32,20 +38,27 @@ public class UserService {
     }
 
     public User getUser(int id) {
+        log.trace("call getUser method with " + id);
         User user = storage.getUser(id);
+        log.trace("User with id = " + id + " is " + user);
         if (user == null) {
+            log.debug("Got null user");
             throw new UserNotFoundException("Can't found user with id: " + id );
         }
         return user;
     }
 
     public List<User> getAllUsers() {
+        log.trace("call getAllUsers method");
         return storage.getAllUsers();
     }
 
     public List<User> getUserFriends(int userId) {
+        log.trace("call updateUser method with " + userId);
         User user = storage.getUser(userId);
+        log.trace("User with id = " + userId + " is " + user);
         if (user == null) {
+            log.debug("Got null user");
             throw new UserNotFoundException("Can't find user to make friends");
         }
         List<User> friends = new ArrayList<>();
@@ -58,15 +71,23 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        log.trace("Updating user with id = " + user.getId());
+        log.trace("call updateUser method with " + user);
+        if (user == null) {
+            log.debug("Got null user");
+            throw new EntityValidationException("Got null user");
+        }
         storage.updateUser(user);
         return user;
     }
 
     public void setFriends(int userId, int friendId) {
+        log.trace("call setFriends method with user " + userId + " and friend " + friendId);
         User user = storage.getUser(userId);
+        log.trace("User with id = " + userId + " is " + user);
         User friend = storage.getUser(friendId);
+        log.trace("User with id = " + friendId + " is " + friend);
         if (user == null || friend == null) {
+            log.debug("Got null user or friend");
             throw new UserNotFoundException("Can't find user to make friends");
         }
         user.addFriend(friend);
@@ -74,8 +95,11 @@ public class UserService {
     }
 
     public void unfriendUsers(int userId, int friendId) {
+        log.trace("call unfriendUsers method with user " + userId + " and friend " + friendId);
         User user = storage.getUser(userId);
+        log.trace("User with id = " + userId + " is " + user);
         User friend = storage.getUser(friendId);
+        log.trace("User with id = " + friendId + " is " + friend);
         if (user == null || friend == null) {
             throw new UserNotFoundException("Can't find user to make friends");
         }
@@ -85,14 +109,18 @@ public class UserService {
 
     private User userNameCheck(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
+            log.trace("Get blank user name in user " + user.getId());
             user.setName(user.getLogin());
         }
         return user;
     }
 
     public List<User> getUsersCommonFriends(int user1Id, int user2Id) {
+        log.trace("call unfriendUsers method with user " + user1Id + " and friend " + user2Id);
         User user1 = storage.getUser(user1Id);
+        log.trace("User with id = " + user1Id + " is " + user1);
         User user2 = storage.getUser(user2Id);
+        log.trace("User with id = " + user1Id + " is " + user2);
         Set<Integer> commonFriendsIDs = user1
             .getFriends()
             .stream()
@@ -103,6 +131,7 @@ public class UserService {
         for (Integer id : commonFriendsIDs) {
             commonFriends.add(storage.getUser(id));
         }
+        log.trace("Amount of common friends beetween users " + user1Id + " and " + user2Id + " is " + commonFriends.size());
         return commonFriends;
     }
 

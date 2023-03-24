@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 
+import javax.validation.ValidationException;
+
 import org.junit.jupiter.api.Test;
 
 import ru.yandex.practicum.filmorate.model.User;
@@ -44,7 +46,7 @@ public abstract class UserStorageTest {
             "mail@mail.org",
             LocalDate.of(2000, 1, 1)
         );
-        storage.addUser(addedUser);
+        assertThrows(ValidationException.class, () -> {storage.addUser(addedUser);});
         assertEquals(0, storage.getAllUsers().size());
         assertNull(storage.getUser(-2));
     }

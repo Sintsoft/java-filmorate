@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import javax.validation.ValidationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 import ru.yandex.practicum.filmorate.utility.exceptions.EntityValidationException;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.utility.exceptions.NullPayloadObjectException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 @Slf4j
@@ -16,7 +19,13 @@ import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 public class ErrorHandler {
     
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleSpringValidationError(final ValidationException e) {
+        return new ErrorResponse("Nothing found in payload");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvaildEntity(final EntityValidationException e) {
         return new ErrorResponse(e.getMessage());
     }
@@ -34,15 +43,21 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleThrowable(final Throwable e) {
-        log.error("Got unprdiacted throwable: " 
-                   + e.getMessage()
-                   + " " + e.getCause()
-                   + " " + e.getStackTrace()
-                   , e);
-        return new ErrorResponse(
-                "Произошла непредвиденная ошибка." 
-        );
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleNullPayloadObjectException(final NullPayloadObjectException e) {
+        return new ErrorResponse("Nothing found in payload");
     }
+
+    // @ExceptionHandler
+    // @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    // public ErrorResponse handleThrowable(final Throwable e) {
+    //     log.error("Got unprdiacted throwable: " 
+    //                + e.getMessage()
+    //                + " " + e.getCause()
+    //                + " " + e.getStackTrace()
+    //                , e);
+    //     return new ErrorResponse(
+    //             "Произошла непредвиденная ошибка." 
+    //     );
+    // }
 }

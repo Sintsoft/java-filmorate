@@ -18,7 +18,7 @@ import java.time.LocalDate;
 
 import ru.yandex.practicum.filmorate.model.User;
 
-@WebMvcTest
+@WebMvcTest(UserController.class)
 public class UserControllerTests {
     
     @MockBean

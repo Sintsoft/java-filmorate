@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.services.UserService;
-import ru.yandex.practicum.filmorate.utility.exceptions.EntityValidationException;
 
 @RestController
 @Slf4j
@@ -55,10 +54,6 @@ public class UserController {
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         log.trace("Call /users POST request");
-        if (user == null) {
-            log.info("Null user body");
-            throw new EntityValidationException();
-        }
         // if (users.containsKey(user.getId())) {
         //     log.info("Wrong user add method");
         //     throw new ValidationException("Wrong method");
@@ -75,10 +70,6 @@ public class UserController {
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         log.trace("Call /users POST request");
-        if (user == null) {
-            log.info("Null user body");
-            throw new EntityValidationException();
-        }
         // if (!users.containsKey(user.getId())) {
         //     log.info("Wrong id method");
         //     throw new ValidationException("Wrong method");

@@ -21,6 +21,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.utility.exceptions.NullPayloadObjectException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 @Service
@@ -36,6 +37,10 @@ public class FilmService {
     private int filmIdIterator = 1;
 
     public Film addFilm(Film film) {
+        if (film == null) {
+            log.debug("Got null as film in addFilm function");
+            throw new NullPayloadObjectException("Nothing in payload");
+        }
         film.setId(filmIdIterator);
         filmCheck(film);
         storage.addFilm(film);
