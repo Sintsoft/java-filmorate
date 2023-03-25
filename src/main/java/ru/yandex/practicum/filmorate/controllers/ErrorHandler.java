@@ -21,6 +21,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNullPayloadObjectException(final NullPayloadObjectException e) {
+        log.info("Nothing found in payload");
         return new ErrorResponse("Nothing found in payload");
     }
     
@@ -48,17 +49,4 @@ public class ErrorHandler {
         return new ErrorResponse("User Not Found");
     }
 
-
-    // @ExceptionHandler
-    // @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    // public ErrorResponse handleThrowable(final Throwable e) {
-    //     log.error("Got unprdiacted throwable: " 
-    //                + e.getMessage()
-    //                + " " + e.getCause()
-    //                + " " + e.getStackTrace()
-    //                , e);
-    //     return new ErrorResponse(
-    //             "Произошла непредвиденная ошибка." 
-    //     );
-    // }
 }
