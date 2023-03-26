@@ -24,7 +24,7 @@ public class ErrorHandler {
         log.info("Nothing found in payload");
         return new ErrorResponse("Nothing found in payload");
     }
-    
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleSpringValidationError(final ValidationException e) {
@@ -33,7 +33,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvaildEntity(final EntityValidationException e) {
+    public ErrorResponse handleInvalidEntity(final EntityValidationException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -46,7 +46,6 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleFilmNotFound(final FilmNotFoundException e) {
-        return new ErrorResponse("User Not Found");
+        return new ErrorResponse("Film Not Found");
     }
-
 }

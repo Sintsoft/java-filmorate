@@ -15,12 +15,12 @@ import lombok.NonNull;
 @Data
 @AllArgsConstructor
 public class User {
-    
+
     private int id;
 
     private String name;
 
-    private final Set<Integer> friends = new TreeSet<>(); 
+    private final Set<Integer> friends = new TreeSet<>();
 
     @NonNull
     @NotBlank(message = "Логин не должен быть пустым")

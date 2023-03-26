@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
 
 public abstract class UserStorageTest {
-    
+
     UserStorage storage;
 
     @Test
@@ -27,7 +27,7 @@ public abstract class UserStorageTest {
         );
         storage.addUser(addedUser);
         assertEquals(1, storage.getAllUsers().size());
-        assertEquals(addedUser , storage.getUser(1));
+        assertEquals(addedUser, storage.getUser(1));
     }
 
     @Test
@@ -46,7 +46,9 @@ public abstract class UserStorageTest {
             "mail@mail.org",
             LocalDate.of(2000, 1, 1)
         );
-        assertThrows(ValidationException.class, () -> {storage.addUser(addedUser);});
+        assertThrows(ValidationException.class, () -> {
+            storage.addUser(addedUser);
+        });
         assertEquals(0, storage.getAllUsers().size());
         assertNull(storage.getUser(-2));
     }
@@ -62,7 +64,7 @@ public abstract class UserStorageTest {
         );
         storage.addUser(addedUser);
         assertEquals(1, storage.getAllUsers().size());
-        assertEquals(addedUser , storage.getUser(1));
+        assertEquals(addedUser, storage.getUser(1));
         storage.deleteUser(addedUser);
         assertEquals(0, storage.getAllUsers().size());
         assertNull(storage.getUser(1));

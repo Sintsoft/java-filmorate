@@ -21,7 +21,7 @@ import ru.yandex.practicum.filmorate.utility.constraints.FilmReleaseConstraint;
 @Slf4j
 @AllArgsConstructor
 public class Film {
-    
+
     private int id;
 
     private final Set<Integer> likes = new TreeSet<>();

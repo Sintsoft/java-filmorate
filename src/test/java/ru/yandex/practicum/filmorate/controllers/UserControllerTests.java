@@ -20,7 +20,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 @WebMvcTest(UserController.class)
 public class UserControllerTests {
-    
+
     @MockBean
     private UserController userController;
 

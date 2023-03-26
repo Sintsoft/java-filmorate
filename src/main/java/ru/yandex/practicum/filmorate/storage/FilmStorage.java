@@ -5,7 +5,6 @@ import java.util.List;
 import ru.yandex.practicum.filmorate.model.Film;
 
 public interface FilmStorage {
-    
 
     void addFilm(Film film);
 

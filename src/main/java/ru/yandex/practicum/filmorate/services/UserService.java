@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
-    
+
     @Autowired
     private final UserStorage storage;
     private int userIdIterator = 1;
@@ -46,7 +45,7 @@ public class UserService {
         log.trace("User with id = " + id + " is " + user);
         if (user == null) {
             log.debug("Got null user");
-            throw new UserNotFoundException("Can't found user with id: " + id );
+            throw new UserNotFoundException("Can't found user with id: " + id);
         }
         return user;
     }
@@ -65,7 +64,7 @@ public class UserService {
             throw new UserNotFoundException("Can't find user to make friends");
         }
         List<User> friends = new ArrayList<>();
-        for(Integer id : user.getFriends()) {
+        for (Integer id : user.getFriends()) {
             if (storage.getUser(id) != null) {
                 friends.add(storage.getUser(id));
             }
@@ -111,7 +110,7 @@ public class UserService {
         friend.removeFriend(user);
     }
 
-    private User chaeckAndUpdateUserName (User user) {
+    private User chaeckAndUpdateUserName(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             log.trace("Get blank user name in user " + user.getId());
             user.setName(user.getLogin());

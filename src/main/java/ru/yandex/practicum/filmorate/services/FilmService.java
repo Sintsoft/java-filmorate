@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.services;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class FilmService {
-    
+
     @Autowired
     private final FilmStorage storage;
-    
+
     @Autowired
     private final UserStorage userStorage;
 
@@ -56,7 +55,7 @@ public class FilmService {
     public Film likeFilm(int filmId, int userId) {
         log.trace("User " + userId + " liked film " + filmId);
         Film film = storage.getFilm(filmId);
-        if (userStorage.getUser(userId) == null ) {
+        if (userStorage.getUser(userId) == null) {
             throw new UserNotFoundException("User not fond");
         }
         if (film == null) {
@@ -92,7 +91,7 @@ public class FilmService {
     public void dislikeFilm(int filmId, int userId) {
         log.trace("User " + userId + " disliked film " + filmId);
         Film film = storage.getFilm(filmId);
-        if (userStorage.getUser(userId) == null ) {
+        if (userStorage.getUser(userId) == null) {
             throw new UserNotFoundException("User not fond");
         }
         if (film == null) {
@@ -101,9 +100,9 @@ public class FilmService {
         film.dislikeFilm(userId);
     }
 
-    public List<Film> getMostLikedFilms(int amount) {        
+    public List<Film> getMostLikedFilms(int amount) {
         Set<Film> sortedByLikes = new TreeSet<>(new FilmPopularityComparator());
-        sortedByLikes.addAll(storage.getAllFilms());        
+        sortedByLikes.addAll(storage.getAllFilms());
         return sortedByLikes.stream().limit(amount).collect(Collectors.toList());
     }
 

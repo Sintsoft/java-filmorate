@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controllers;
 import java.util.List;
 import javax.validation.Valid;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +32,7 @@ public class UserController {
         log.trace("Call /users GET request");
         return userService.getAllUsers();
     }
-    
+
     @GetMapping("/{userId}")
     public User getUser(@PathVariable int userId) {
         return userService.getUser(userId);
@@ -60,7 +59,6 @@ public class UserController {
         return userService.addUser(user);
     }
 
-    
     @GetMapping("/{userId}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable int userId, @PathVariable int otherId) {
         return userService.getUsersCommonFriends(userId, otherId);

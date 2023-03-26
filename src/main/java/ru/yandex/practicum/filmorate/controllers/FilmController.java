@@ -1,13 +1,9 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,14 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.services.FilmService;
-import ru.yandex.practicum.filmorate.utility.exceptions.EntityValidationException;
 
 @RestController
 @Slf4j
 @RequestMapping("/films")
 @RequiredArgsConstructor
 public class FilmController {
-    
+
     @Autowired
     private final FilmService filmService;
 
