@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controllers;
 import java.util.List;
 import javax.validation.Valid;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +22,11 @@ import ru.yandex.practicum.filmorate.services.UserService;
 @RestController
 @Slf4j
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -54,10 +57,6 @@ public class UserController {
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         log.trace("Call /users POST request");
-        // if (users.containsKey(user.getId())) {
-        //     log.info("Wrong user add method");
-        //     throw new ValidationException("Wrong method");
-        // }
         return userService.addUser(user);
     }
 
@@ -70,10 +69,6 @@ public class UserController {
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         log.trace("Call /users POST request");
-        // if (!users.containsKey(user.getId())) {
-        //     log.info("Wrong id method");
-        //     throw new ValidationException("Wrong method");
-        // }
         return userService.updateUser(user);
     }
 

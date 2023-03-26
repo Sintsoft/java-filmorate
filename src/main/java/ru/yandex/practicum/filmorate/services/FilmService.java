@@ -1,38 +1,34 @@
 package ru.yandex.practicum.filmorate.services;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
-import javax.validation.ValidationException;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.utility.exceptions.NullPayloadObjectException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
+import javax.validation.ValidationException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FilmService {
     
     @Autowired
-    private FilmStorage storage;
+    private final FilmStorage storage;
     
     @Autowired
-    private UserStorage userStorage;
+    private final UserStorage userStorage;
 
     private int filmIdIterator = 1;
 
@@ -45,7 +41,7 @@ public class FilmService {
         filmCheck(film);
         storage.addFilm(film);
         filmIdIterator++; // Итерируем после того как успешно добавили
-        log.trace("Film itreator afer add new film = " + filmIdIterator);
+        log.trace("Film iterator after add new film = " + filmIdIterator);
         return film;
     }
 
@@ -102,7 +98,7 @@ public class FilmService {
         if (film == null) {
             throw new FilmNotFoundException("No such film");
         }
-        film.likeFilm(userId);
+        film.dislikeFilm(userId);
     }
 
     public List<Film> getMostLikedFilms(int amount) {        

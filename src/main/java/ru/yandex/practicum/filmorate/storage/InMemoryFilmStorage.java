@@ -15,7 +15,7 @@ import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 @Component
 public class InMemoryFilmStorage implements FilmStorage{
 
-    Map<Integer, Film> films = new HashMap<>();
+    private final Map<Integer, Film> films = new HashMap<>();
 
     @Override
     public void addFilm(Film film) {

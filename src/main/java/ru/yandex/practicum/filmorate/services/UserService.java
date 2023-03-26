@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +19,11 @@ import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService {
     
     @Autowired
-    private UserStorage storage;
+    private final UserStorage storage;
     private int userIdIterator = 1;
 
     public User addUser(User user) {
@@ -29,7 +32,7 @@ public class UserService {
             log.debug("Got null user");
             throw new EntityValidationException("Got null user");
         }
-        userNameCheck(user);
+        chaeckAndUpdateUserName(user);
         user.setId(userIdIterator);
         storage.addUser(user);
         userIdIterator++; // Итерируем после того как успешно добавили
@@ -76,6 +79,7 @@ public class UserService {
             log.debug("Got null user");
             throw new EntityValidationException("Got null user");
         }
+        chaeckAndUpdateUserName(user);
         storage.updateUser(user);
         return user;
     }
@@ -107,7 +111,7 @@ public class UserService {
         friend.removeFriend(user);
     }
 
-    private User userNameCheck(User user) {
+    private User chaeckAndUpdateUserName (User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             log.trace("Get blank user name in user " + user.getId());
             user.setName(user.getLogin());

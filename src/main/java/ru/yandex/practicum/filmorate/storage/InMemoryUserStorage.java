@@ -15,7 +15,7 @@ import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    Map<Integer, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
 
     @Override
     public void addUser(User user) {

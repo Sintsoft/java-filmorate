@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +28,11 @@ import ru.yandex.practicum.filmorate.utility.exceptions.EntityValidationExceptio
 @RestController
 @Slf4j
 @RequestMapping("/films")
+@RequiredArgsConstructor
 public class FilmController {
     
     @Autowired
-    private FilmService filmService;
+    private final FilmService filmService;
 
     @GetMapping
     public List<Film> getAllFilms() {
