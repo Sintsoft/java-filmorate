@@ -23,7 +23,6 @@ public class UserService {
 
     @Autowired
     private final UserStorage storage;
-    private int userIdIterator = 1;
 
     public User addUser(User user) {
         log.trace("call addUser method with " + user);
@@ -32,10 +31,8 @@ public class UserService {
             throw new EntityValidationException("Got null user");
         }
         chaeckAndUpdateUserName(user);
-        user.setId(userIdIterator);
         storage.addUser(user);
-        userIdIterator++; // Итерируем после того как успешно добавили
-        log.trace("User itreator afer add new user = " + userIdIterator);
+
         return user;
     }
 

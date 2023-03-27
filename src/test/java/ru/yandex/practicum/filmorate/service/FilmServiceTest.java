@@ -16,10 +16,10 @@ import java.time.LocalDate;
 public class FilmServiceTest {
 
     @Autowired
-    private FilmService service;
+    FilmService service;
 
     @Autowired
-    private UserService userService;
+    UserService userService;
 
     Film createTestFilm() {
         return new Film(0, Duration.ofMinutes(90), "Test film", "Test film description", LocalDate.of(2022,2,2));

@@ -22,13 +22,13 @@ import ru.yandex.practicum.filmorate.model.User;
 public class UserControllerTests {
 
     @MockBean
-    private UserController userController;
+    UserController userController;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @SneakyThrows
     @Test

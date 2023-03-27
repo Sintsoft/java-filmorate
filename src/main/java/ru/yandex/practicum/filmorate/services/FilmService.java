@@ -29,18 +29,16 @@ public class FilmService {
     @Autowired
     private final UserStorage userStorage;
 
-    private int filmIdIterator = 1;
+    private static final FilmPopularityComparator popularityComparator = new FilmPopularityComparator();
 
     public Film addFilm(Film film) {
         if (film == null) {
             log.debug("Got null as film in addFilm function");
             throw new NullPayloadObjectException("Nothing in payload");
         }
-        film.setId(filmIdIterator);
         filmCheck(film);
         storage.addFilm(film);
-        filmIdIterator++; // Итерируем после того как успешно добавили
-        log.trace("Film iterator after add new film = " + filmIdIterator);
+
         return film;
     }
 
@@ -101,7 +99,7 @@ public class FilmService {
     }
 
     public List<Film> getMostLikedFilms(int amount) {
-        Set<Film> sortedByLikes = new TreeSet<>(new FilmPopularityComparator());
+        Set<Film> sortedByLikes = new TreeSet<>(popularityComparator);
         sortedByLikes.addAll(storage.getAllFilms());
         return sortedByLikes.stream().limit(amount).collect(Collectors.toList());
     }

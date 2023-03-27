@@ -7,22 +7,29 @@ import javax.validation.ValidationException;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
+@Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Integer, User> users = new HashMap<>();
 
+    private int userIdIterator = 1;
+
     @Override
     public void addUser(User user) {
-        if (!users.containsKey(user.getId()) && user.getId() > 0) {
+        if (!users.containsKey(user.getId()) && user.getId() == 0) {
+            user.setId(userIdIterator);
             users.put(
                 user.getId(), user
             );
+            userIdIterator++; // Итерируем после того как успешно добавили
+            log.trace("User itreator afer add new user = " + userIdIterator);
         } else {
             throw new ValidationException("Add user failed - invaild user");
         }

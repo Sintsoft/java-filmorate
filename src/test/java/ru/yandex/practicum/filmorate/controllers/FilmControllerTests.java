@@ -25,13 +25,13 @@ import ru.yandex.practicum.filmorate.model.Film;
 public class FilmControllerTests {
 
     @MockBean
-    private FilmController filmController;
+    FilmController filmController;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @SneakyThrows
     @Test
