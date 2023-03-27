@@ -19,7 +19,7 @@ public abstract class UserStorageTest {
     @Test
     void addUserTest() {
         User addedUser = new User(
-            1,
+            0,
             "User name",
             "Login",
             "mail@mail.org",
@@ -56,7 +56,7 @@ public abstract class UserStorageTest {
     @Test
     void deleteUserTest() {
         User addedUser = new User(
-            1,
+            0,
             "User name",
             "Login",
             "mail@mail.org",
