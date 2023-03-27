@@ -24,12 +24,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public void addFilm(Film film) {
         if (!films.containsKey(film.getId()) && film.getId() == 0) {
-            filmIdIterator++; // Итерируем после того как успешно добавили
-            log.trace("Film iterator after add new film = " + filmIdIterator);
+            film.setId(filmIdIterator);
             films.put(
                 film.getId(), film
             );
             filmIdIterator++;
+            log.trace("Film iterator after add new film = " + filmIdIterator);
         } else {
             throw new ValidationException("Add film failed - invaild film");
         }
