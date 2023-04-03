@@ -1,12 +1,13 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.validation.Valid;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,59 +16,58 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.utility.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.services.UserService;
 
 @RestController
 @Slf4j
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    private final Map<Integer, User> users = new HashMap<>();
-    private int userIdIterator = 1;;
+    @Autowired
+    private final UserService userService;
 
     @GetMapping
     public List<User> getAllUsers() {
         log.trace("Call /users GET request");
-        return List.copyOf(users.values());
+        return userService.getAllUsers();
     }
-    
+
+    @GetMapping("/{userId}")
+    public User getUser(@PathVariable int userId) {
+        return userService.getUser(userId);
+    }
+
+    @GetMapping("/{userId}/friends")
+    public List<User> getUserFriends(@PathVariable int userId) {
+        return userService.getUserFriends(userId);
+    }
+
+    @PutMapping("/{userId}/friends/{friendId}")
+    public void addUserFriend(@PathVariable int userId, @PathVariable int friendId) {
+        userService.setFriends(userId, friendId);
+    }
+
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public void unfriendUsers(@PathVariable int userId, @PathVariable int friendId) {
+        userService.unfriendUsers(userId, friendId);
+    }
+
     @PostMapping
-    public User creatUser(@Valid @RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         log.trace("Call /users POST request");
-        if (user == null) {
-            log.info("Null user body");
-            throw new ValidationException();
-        }
-        if (users.containsKey(user.getId())) {
-            log.info("Wrong user add method");
-            throw new ValidationException("Wrong method");
-        }
-        user = userNameCheck(user);
-        user.setId(userIdIterator++);
-        users.put(user.getId(), user);
-        return user;
+        return userService.addUser(user);
+    }
+
+    @GetMapping("/{userId}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable int userId, @PathVariable int otherId) {
+        return userService.getUsersCommonFriends(userId, otherId);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         log.trace("Call /users POST request");
-        if (user == null) {
-            log.info("Null user body");
-            throw new ValidationException();
-        }
-        if (!users.containsKey(user.getId())) {
-            log.info("Wrong id method");
-            throw new ValidationException("Wrong method");
-        }
-        user = userNameCheck(user);
-        users.put(user.getId(), user);
-        return user;
+        return userService.updateUser(user);
     }
 
-    private User userNameCheck(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        return user;
-    }
 }

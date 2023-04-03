@@ -2,17 +2,11 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,20 +16,19 @@ import lombok.SneakyThrows;
 import java.net.URI;
 import java.time.LocalDate;
 
-import ru.yandex.practicum.filmorate.controllers.UserController;
 import ru.yandex.practicum.filmorate.model.User;
 
-@WebMvcTest
+@WebMvcTest(UserController.class)
 public class UserControllerTests {
-    
+
     @MockBean
-    private UserController userController;
+    UserController userController;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @SneakyThrows
     @Test

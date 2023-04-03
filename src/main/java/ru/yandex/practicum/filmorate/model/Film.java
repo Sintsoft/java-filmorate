@@ -2,9 +2,10 @@ package ru.yandex.practicum.filmorate.model;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Set;
+import java.util.TreeSet;
 import java.time.Duration;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -20,8 +21,10 @@ import ru.yandex.practicum.filmorate.utility.constraints.FilmReleaseConstraint;
 @Slf4j
 @AllArgsConstructor
 public class Film {
-    
+
     private int id;
+
+    private final Set<Integer> likes = new TreeSet<>();
 
     @DurationUnit(ChronoUnit.HOURS)
     private Duration duration;
@@ -40,4 +43,13 @@ public class Film {
         log.trace("Film {} duartion {} in minutes {}", this.id, this.duration, this.duration.toSeconds());
         return this.duration.toSeconds();
     }
+
+    public void likeFilm(int userId) {
+        likes.add(userId);
+    }
+
+    public void dislikeFilm(int userId) {
+        likes.remove(userId);
+    }
+
 }
