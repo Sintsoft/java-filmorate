@@ -1,0 +1,68 @@
+@startuml
+
+left to right direction
+
+entity User << (O,#22bbcc) Object >> {
+    **id** : **PK** : int
+    --
+    name : String
+    login : String
+    email : String
+    birthday : Date
+}
+
+entity Film << (O,#22bbcc) Object >> {
+    **id** : **PK** : int
+    --
+    name : String
+    description : String
+    release_date : Date
+    duration : int
+}
+
+entity Genre << (D,#eeee00) Dictionary >>
+ {
+    **id** : **PK** : int
+    --
+    genre_name : String
+}
+
+entity FilmGenre  << (R,#FF7700) Relation >>
+{
+    **id** : **PK** : int
+    --
+    film_id : **FK** : int
+    genre_id : **FK** : int
+}
+
+
+entity Friendship  << (R,#FF7700) Relation >>
+ {
+    **id** : **PK** : int
+    --
+    requester_id : **FK** : int
+    accepter_id : **FK** : int
+    --
+    accepted : boolean
+}
+
+
+entity Likes << (R,#FF7700) Relation >> {
+    **id** : **PK** : int
+    --
+    user_id : **FK** : int
+    film_id : **FK** : int
+}
+
+
+
+User::id ||---o{ Friendship::requester_id
+User::id ||---o{ Friendship::accepter_id
+
+User::id ||---o{ Likes::user_id
+Film::id ||---o{ Likes::film_id
+
+Film::id ||---o{ FilmGenre::film_id
+Genre::id ||---o{ FilmGenre::genre_id
+
+@enduml
