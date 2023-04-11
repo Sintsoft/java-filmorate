@@ -15,7 +15,7 @@ import ru.yandex.practicum.filmorate.utility.exceptions.EntityValidationExceptio
 
 
 @SpringBootTest
-public class UserServiceTest {
+class UserServiceTest {
 
     @Autowired
     UserService service;

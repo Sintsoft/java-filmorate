@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import ru.yandex.practicum.filmorate.model.Film;
 
 @WebMvcTest(FilmController.class)
-public class FilmControllerTests {
+class FilmControllerTests {
 
     @MockBean
     FilmController filmController;

@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 
 @SpringBootTest
-public class FilmServiceTest {
+class FilmServiceTest {
 
     @Autowired
     FilmService service;
