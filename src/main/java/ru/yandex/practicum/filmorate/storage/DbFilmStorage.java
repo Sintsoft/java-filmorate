@@ -83,7 +83,7 @@ public class DbFilmStorage implements FilmStorage {
             log.debug("Succesfully establihed connection to databae - " + params.getUrl());
             preparedStatement.setInt(1, film.getId());
             int rows = preparedStatement.executeUpdate();
-            if (rows == 0 ) {
+            if (rows == 0) {
                 log.trace("Wrong film id. Throwing eception");
                 throw new FilmNotFoundException("No film with id - " + film.getId());
             }
@@ -115,7 +115,7 @@ public class DbFilmStorage implements FilmStorage {
             preparedStatement.setLong(5, film.getMpa().getId());
             preparedStatement.setInt(6, film.getId());
             int rows = preparedStatement.executeUpdate();
-            if (rows == 0 ) {
+            if (rows == 0) {
                 log.trace("Wrong film id. Throwing eception");
                 throw new FilmNotFoundException("No film with id - " + film.getId());
             }
@@ -245,7 +245,7 @@ public class DbFilmStorage implements FilmStorage {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, filmId);
             int rows = preparedStatement.executeUpdate();
-            if (rows == 0 ) {
+            if (rows == 0) {
                 log.trace("Wrong user id. Throwing eception");
                 throw new FilmNotFoundException("Unable to erase friendship beetween users");
             }
