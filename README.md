@@ -1,2 +1,6 @@
 # java-filmorate
-Template repository for Filmorate project.
+
+# ER-диагармма проекта
+
+![Alt text](doc/db_schema.png)
+

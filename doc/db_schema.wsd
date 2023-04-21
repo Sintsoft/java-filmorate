@@ -5,26 +5,33 @@ left to right direction
 entity User << (O,#22bbcc) Object >> {
     **id** : **PK** : int
     --
-    name : String
-    login : String
-    email : String
+    name : varchar
+    login : varchar
+    email : varchar
     birthday : Date
 }
+
 
 entity Film << (O,#22bbcc) Object >> {
     **id** : **PK** : int
     --
-    name : String
-    description : String
+    name : varchar
+    description : varchar
     release_date : Date
     duration : int
+    rating : FK : varchar
 }
 
 entity Genre << (D,#eeee00) Dictionary >>
  {
     **id** : **PK** : int
     --
-    genre_name : String
+    genre_name : varchar
+}
+
+entity Ratings << (D,#eeee00) Dictionary >>
+{
+    **rating** : **PK** : varchar
 }
 
 entity FilmGenre  << (R,#FF7700) Relation >>
@@ -42,8 +49,6 @@ entity Friendship  << (R,#FF7700) Relation >>
     --
     requester_id : **FK** : int
     accepter_id : **FK** : int
-    --
-    accepted : boolean
 }
 
 
@@ -64,5 +69,7 @@ Film::id ||---o{ Likes::film_id
 
 Film::id ||---o{ FilmGenre::film_id
 Genre::id ||---o{ FilmGenre::genre_id
+
+Ratings::rating ||---o{ Film::rating
 
 @enduml
