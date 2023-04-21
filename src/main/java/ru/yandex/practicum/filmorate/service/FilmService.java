@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
@@ -12,10 +13,7 @@ import ru.yandex.practicum.filmorate.utility.exceptions.NullPayloadObjectExcepti
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 import javax.validation.ValidationException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service

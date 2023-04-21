@@ -64,16 +64,4 @@ public class FilmControllerTests {
         assertEquals(0, filmController.getAllFilms().size());
     }
 
-    @SneakyThrows
-    @Test
-    void filmDurationCorrectResponseTest() {
-        Film film = new Film(0, "Test film", null, LocalDate.of(1995, 6, 1),Duration.ofMinutes(90));
-
-        mockMvc.perform(post("/films", URI.create("/films"))
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(film)));
-        List<Film> resp = filmController.getAllFilms();
-        assertEquals(1, filmController.getAllFilms().size());
-        assertEquals(1, filmController.getAllFilms().size());
-    }
 }

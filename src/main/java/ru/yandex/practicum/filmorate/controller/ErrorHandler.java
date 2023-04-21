@@ -27,7 +27,19 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFound(final UserNotFoundException e) {
-        return new ErrorResponse("User Not Found");
+        return new ErrorResponse("User not found");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleEntityNotFound(final EntityNotFoundException e) {
+        return new ErrorResponse("Not found");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleFilmNotFound(final FilmNotFoundException e) {
+        return new ErrorResponse("Film not found");
     }
 
     @ExceptionHandler

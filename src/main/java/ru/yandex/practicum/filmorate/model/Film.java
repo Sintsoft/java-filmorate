@@ -34,14 +34,16 @@ public class Film {
     @FilmReleaseConstraint
     private LocalDate releaseDate;
 
-    @DurationUnit(ChronoUnit.MINUTES)
+    @DurationUnit(ChronoUnit.HOURS)
     private Duration duration;
+
+    private MPA mpa;
 
     private final Set<Integer> likes = new TreeSet<>();
 
     public long getDuration() {
-        log.trace("Film {} duartion {} in minutes {}", this.id, this.duration, this.duration.toSeconds());
-        return this.duration.toMinutes();
+        log.debug("Film {} duartion {} in minutes {}", this.id, this.duration, this.duration.toSeconds());
+        return this.duration.toSeconds();
     }
 
     public void likeFilm(int userId) {

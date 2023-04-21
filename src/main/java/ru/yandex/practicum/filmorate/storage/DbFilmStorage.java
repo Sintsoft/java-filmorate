@@ -5,12 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.utility.DataBaseConnectionParams;
 import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionEхception;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
-import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 import java.sql.*;
 import java.time.Duration;
@@ -25,10 +24,10 @@ import java.util.Set;
 public class DbFilmStorage implements FilmStorage {
 
     @Autowired
-    UserStorage userStorage;
+    DataBaseConnectionParams params;
 
     @Autowired
-    DataBaseConnectionParams params;
+    MPAStorage mpaStorage;
 
     @Override
     public void addFilm(Film film) {
@@ -44,13 +43,14 @@ public class DbFilmStorage implements FilmStorage {
                         params.getPassword()
                 );
                 PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION) VALUES (?, ?, ?, ?)",
+                        "INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?)",
                         Statement.RETURN_GENERATED_KEYS);
         ) {
             preparedStatement.setString(1, film.getName());
             preparedStatement.setString(2, film.getDescription());
             preparedStatement.setDate(3, Date.valueOf(film.getReleaseDate()));
             preparedStatement.setLong(4, film.getDuration());
+            preparedStatement.setLong(5, film.getMpa().getId());
             preparedStatement.executeUpdate();
             ResultSet result = preparedStatement.getGeneratedKeys();
             while (result.next()) {
@@ -101,7 +101,7 @@ public class DbFilmStorage implements FilmStorage {
                         params.getPassword()
                 );
                 PreparedStatement preparedStatement = connection.prepareStatement(
-                        "UPDATE FILMS SET NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ? WHERE ID = ?",
+                        "UPDATE FILMS SET NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ? WHERE ID = ?",
                         Statement.RETURN_GENERATED_KEYS);
         ) {
             log.debug("Succesfully establihed connection to databae - " + params.getUrl());
@@ -109,7 +109,8 @@ public class DbFilmStorage implements FilmStorage {
             preparedStatement.setString(2, film.getDescription());
             preparedStatement.setDate(3, Date.valueOf(film.getReleaseDate()));
             preparedStatement.setLong(4, film.getDuration());
-            preparedStatement.setInt(5, film.getId());
+            preparedStatement.setLong(5, film.getMpa().getId());
+            preparedStatement.setInt(6, film.getId());
             int rows = preparedStatement.executeUpdate();
             if (rows == 0 ) {
                 log.trace("Wrong film id. Throwing eception");
@@ -145,7 +146,8 @@ public class DbFilmStorage implements FilmStorage {
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getDate(4).toLocalDate(),
-                        Duration.ofMinutes(resultSet.getLong(5))
+                        Duration.ofMinutes(resultSet.getLong(5)),
+                        mpaStorage.getMPA(resultSet.getInt(6)).get()
                 );
                 for (Integer userId : getFilmLikes(returnFilm.getId())) {
                     returnFilm.likeFilm(userId);
@@ -179,7 +181,8 @@ public class DbFilmStorage implements FilmStorage {
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getDate(4).toLocalDate(),
-                        Duration.ofMinutes(resultSet.getLong(5))
+                        Duration.ofMinutes(resultSet.getLong(5)),
+                        mpaStorage.getMPA(resultSet.getInt(6)).get()
                 );
                 for (Integer userId : getFilmLikes(filmToAdd.getId())) {
                     filmToAdd.likeFilm(userId);
@@ -274,7 +277,8 @@ public class DbFilmStorage implements FilmStorage {
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getDate(4).toLocalDate(),
-                        Duration.ofMinutes(resultSet.getLong(5))
+                        Duration.ofMinutes(resultSet.getLong(5)),
+                        mpaStorage.getMPA(resultSet.getInt(6)).get()
                 );
                 for (Integer userId : getFilmLikes(filmToAdd.getId())) {
                     filmToAdd.likeFilm(userId);
