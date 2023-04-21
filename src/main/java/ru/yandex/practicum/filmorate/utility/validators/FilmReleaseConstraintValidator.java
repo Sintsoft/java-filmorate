@@ -1,11 +1,10 @@
 package ru.yandex.practicum.filmorate.utility.validators;
 
-import java.time.LocalDate;
+import ru.yandex.practicum.filmorate.utility.constraints.FilmReleaseConstraint;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import ru.yandex.practicum.filmorate.utility.constraints.FilmReleaseConstraint;
+import java.time.LocalDate;
 
 public class FilmReleaseConstraintValidator implements ConstraintValidator<FilmReleaseConstraint, LocalDate> {
 

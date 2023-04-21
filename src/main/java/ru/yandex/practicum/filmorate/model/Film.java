@@ -1,33 +1,28 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.convert.DurationUnit;
+import org.springframework.lang.NonNull;
+import ru.yandex.practicum.filmorate.utility.constraints.FilmReleaseConstraint;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.TreeSet;
-import java.time.Duration;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-import org.springframework.boot.convert.DurationUnit;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.utility.constraints.FilmReleaseConstraint;
 
 @Data
 @Slf4j
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class Film {
 
-    private int id;
-
-    private final Set<Integer> likes = new TreeSet<>();
-
-    @DurationUnit(ChronoUnit.HOURS)
-    private Duration duration;
+    private int id = 0;
 
     @NonNull
     @NotBlank
@@ -39,9 +34,14 @@ public class Film {
     @FilmReleaseConstraint
     private LocalDate releaseDate;
 
+    @DurationUnit(ChronoUnit.MINUTES)
+    private Duration duration;
+
+    private final Set<Integer> likes = new TreeSet<>();
+
     public long getDuration() {
         log.trace("Film {} duartion {} in minutes {}", this.id, this.duration, this.duration.toSeconds());
-        return this.duration.toSeconds();
+        return this.duration.toMinutes();
     }
 
     public void likeFilm(int userId) {
@@ -51,5 +51,4 @@ public class Film {
     public void dislikeFilm(int userId) {
         likes.remove(userId);
     }
-
 }

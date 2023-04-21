@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controllers;
+package ru.yandex.practicum.filmorate.controller;
 
 import java.util.List;
 import javax.validation.Valid;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.services.UserService;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 @RestController
 @Slf4j
@@ -35,7 +35,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public User getUser(@PathVariable int userId) {
-        return userService.getUser(userId);
+        return userService.getUserById(userId);
     }
 
     @GetMapping("/{userId}/friends")
@@ -45,12 +45,12 @@ public class UserController {
 
     @PutMapping("/{userId}/friends/{friendId}")
     public void addUserFriend(@PathVariable int userId, @PathVariable int friendId) {
-        userService.setFriends(userId, friendId);
+        userService.setFriend(userId, friendId);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public void unfriendUsers(@PathVariable int userId, @PathVariable int friendId) {
-        userService.unfriendUsers(userId, friendId);
+        userService.unsetFriend(userId, friendId);
     }
 
     @PostMapping
