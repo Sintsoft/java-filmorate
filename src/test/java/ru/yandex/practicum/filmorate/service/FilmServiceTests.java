@@ -9,8 +9,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.model.MPA;
+
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -31,7 +31,7 @@ public class FilmServiceTests {
     UserService userService;
 
     Film createTestFilm() {
-        return new Film(0, "Test film", "Test film description", LocalDate.of(2022,2,2), Duration.ofMinutes(90));
+        return new Film(0, "Test film", "Test film description", LocalDate.of(2022,2,2), 90, new MPA(1), null);
     }
 
     User createTestUser() {

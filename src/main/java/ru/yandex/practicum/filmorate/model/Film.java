@@ -9,10 +9,13 @@ import org.springframework.lang.NonNull;
 import ru.yandex.practicum.filmorate.utility.constraints.FilmReleaseConstraint;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -34,17 +37,15 @@ public class Film {
     @FilmReleaseConstraint
     private LocalDate releaseDate;
 
-    @DurationUnit(ChronoUnit.HOURS)
-    private Duration duration;
+    // ЧЕРЕЗ DURATION НОРМАЛЬНО НЕ РАБОТАЕТ СДЕЛАНО ЧЕРЕЗ LONG!!!
+    @Positive
+    private long duration;
 
     private MPA mpa;
 
-    private final Set<Integer> likes = new TreeSet<>();
+    private List<Genre> genres = new ArrayList<>();
 
-    public long getDuration() {
-        log.debug("Film {} duartion {} in minutes {}", this.id, this.duration, this.duration.toSeconds());
-        return this.duration.toSeconds();
-    }
+    private final Set<Integer> likes = new TreeSet<>();
 
     public void likeFilm(int userId) {
         likes.add(userId);

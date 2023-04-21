@@ -48,7 +48,7 @@ public class MPAStorage {
     }
 
     public List<MPA> getAllMPA() {
-        log.trace("Level: Storage. Method: getMPA.");
+        log.trace("Level: Storage. Method: getAllMPA.");
         try (
                 Connection connection = DriverManager.getConnection(
                         params.getUrl(),

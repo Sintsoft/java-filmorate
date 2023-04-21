@@ -45,7 +45,7 @@ public class FilmControllerTests {
     @SneakyThrows
     @Test
     void normalFilmTest() {
-        Film film = new Film(0, "Test film", null, LocalDate.of(1995, 6, 1), Duration.ofMinutes(90));
+        Film film = new Film(0, "Test film", null, LocalDate.of(1995, 6, 1), 90, null, null);
 
         mockMvc.perform(post("/films", URI.create("/films"))
                     .contentType("application/json")
@@ -56,7 +56,7 @@ public class FilmControllerTests {
     @SneakyThrows
     @Test
     void invalidDurationFilmTest() {
-        Film film = new Film(0, "Test film", null, LocalDate.of(1995, 6, 1),Duration.ofMinutes(-90));
+        Film film = new Film(0, "Test film", null, LocalDate.of(1995, 6, 1), -90, null, null);
 
         mockMvc.perform(post("/films", URI.create("/films"))
                     .contentType("application/json")

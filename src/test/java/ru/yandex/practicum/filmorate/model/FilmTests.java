@@ -34,6 +34,8 @@ public class FilmTests {
                     null,
                     null,
                     null,
+                    0,
+                    null,
                     null
             );
         });
@@ -46,7 +48,9 @@ public class FilmTests {
                 "Film name",
                 "Film description",
                 LocalDate.of(1999, 12, 20),
-                Duration.ofMinutes(90)
+                90,
+                null,
+                null
         );
         Set<ConstraintViolation<Film>> violations = validator.validate(testFilm);
         assertTrue(violations.isEmpty());
@@ -60,7 +64,9 @@ public class FilmTests {
                 "Film name",
                 "Film description",
                 LocalDate.of(1880, 12, 20),
-                Duration.ofMinutes(90)
+                90,
+                null,
+                null
         );
         Set<ConstraintViolation<Film>> violations = validator.validate(testFilm);
         assertFalse(violations.isEmpty());
@@ -73,7 +79,9 @@ public class FilmTests {
                 "Film name",
                 "Film description",
                 LocalDate.of(1880, 12, 20),
-                Duration.ofMinutes(90)
+                90,
+                null,
+                null
         );
         testFilm.likeFilm(1);
         assertEquals(1, testFilm.getLikes().size());
@@ -86,7 +94,9 @@ public class FilmTests {
                 "Film name",
                 "Film description",
                 LocalDate.of(1880, 12, 20),
-                Duration.ofMinutes(90)
+                90,
+                null,
+                null
         );
         testFilm.likeFilm(1);
         assertEquals(1, testFilm.getLikes().size());

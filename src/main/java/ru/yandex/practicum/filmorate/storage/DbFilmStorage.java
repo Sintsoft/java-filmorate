@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 
 import java.sql.*;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +27,9 @@ public class DbFilmStorage implements FilmStorage {
 
     @Autowired
     MPAStorage mpaStorage;
+
+    @Autowired
+    GenreStorage genreStorage;
 
     @Override
     public void addFilm(Film film) {
@@ -50,13 +52,15 @@ public class DbFilmStorage implements FilmStorage {
             preparedStatement.setString(2, film.getDescription());
             preparedStatement.setDate(3, Date.valueOf(film.getReleaseDate()));
             preparedStatement.setLong(4, film.getDuration());
-            preparedStatement.setLong(5, film.getMpa().getId());
+            preparedStatement.setInt(5, film.getMpa().getId());
             preparedStatement.executeUpdate();
+            log.trace("added film to DB");
             ResultSet result = preparedStatement.getGeneratedKeys();
             while (result.next()) {
                 log.debug("Got film id = " + result.getInt(1));
                 film.setId(result.getInt(1));
             }
+            genreStorage.saveFilmGenres(film);
         } catch (SQLException e) {
             log.error("Failed adding film due to: " + e.getClass());
             throw new DatabaseConnectionEхception("Failed to add film");
@@ -116,7 +120,9 @@ public class DbFilmStorage implements FilmStorage {
                 log.trace("Wrong film id. Throwing eception");
                 throw new FilmNotFoundException("No film with id - " + film.getId());
             }
-            log.trace("Succesfully updated film!");
+            genreStorage.saveFilmGenres(film);
+            film.setGenres(genreStorage.getFilmGenres(film.getId()));
+            log.trace("Succesfully updated film! " + film);
         } catch (SQLException e) {
             log.error("Failed delete film due to: " + e.getClass());
             throw new DatabaseConnectionEхception("Failed to delete film");
@@ -146,12 +152,14 @@ public class DbFilmStorage implements FilmStorage {
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getDate(4).toLocalDate(),
-                        Duration.ofMinutes(resultSet.getLong(5)),
-                        mpaStorage.getMPA(resultSet.getInt(6)).get()
+                        resultSet.getLong(5),
+                        mpaStorage.getMPA(resultSet.getInt(6)).get(),
+                        genreStorage.getFilmGenres(resultSet.getInt(1))
                 );
                 for (Integer userId : getFilmLikes(returnFilm.getId())) {
                     returnFilm.likeFilm(userId);
                 }
+
             }
             return returnFilm;
         } catch (SQLException e) {
@@ -181,8 +189,9 @@ public class DbFilmStorage implements FilmStorage {
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getDate(4).toLocalDate(),
-                        Duration.ofMinutes(resultSet.getLong(5)),
-                        mpaStorage.getMPA(resultSet.getInt(6)).get()
+                        resultSet.getLong(5),
+                        mpaStorage.getMPA(resultSet.getInt(6)).get(),
+                        genreStorage.getFilmGenres(resultSet.getInt(1))
                 );
                 for (Integer userId : getFilmLikes(filmToAdd.getId())) {
                     filmToAdd.likeFilm(userId);
@@ -198,6 +207,7 @@ public class DbFilmStorage implements FilmStorage {
 
     @Override
     public void saveLike(int userId, int filmId) {
+        log.trace("Level: Storage. Method: saveLike.");
         try (
                 Connection connection = DriverManager.getConnection(
                         params.getUrl(),
@@ -212,6 +222,7 @@ public class DbFilmStorage implements FilmStorage {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, filmId);
             preparedStatement.executeUpdate();
+            log.trace("User "  + userId + " like to film " + filmId + " saved");
         } catch (SQLException e) {
             log.error("Failed get all users due to: " + e.getClass());
             throw new DatabaseConnectionEхception("Failed to save liked film " + filmId + " by user " + userId);
@@ -247,7 +258,7 @@ public class DbFilmStorage implements FilmStorage {
 
     @Override
     public List<Film> getMostLikedFilms(int amount) {
-        log.trace("Level: Storage. Method: getFilmById.");
+        log.trace("Level: Storage. Method: getMostLikedFilms.");
         try (
                 Connection connection = DriverManager.getConnection(
                         params.getUrl(),
@@ -255,30 +266,29 @@ public class DbFilmStorage implements FilmStorage {
                         params.getPassword()
                 );
                 PreparedStatement preparedStatement = connection.prepareStatement(
-                        "SELECT F.*\n" +
-                                "FROM (\n" +
-                                "\tSELECT FILM_ID, COUNT(USER_ID) AS AMOUNT\n" +
-                                "\tFROM LIKES\n" +
-                                "\tGROUP BY FILM_ID \n" +
-                                "\tORDER BY AMOUNT DESC \n" +
-                                "\tLIMIT ?\n" +
-                                ") AS C\n" +
-                                "LEFT JOIN FILMS F\n" +
-                                "\tON C.FILM_ID = F.ID",
+                        "SELECT f.*, COUNT(l.USER_ID) AS AMOUNT\n" +
+                                "FROM FILMS f \n" +
+                                "LEFT JOIN LIKES l\n" +
+                                "\tON f.ID = l.FILM_ID \n" +
+                                "GROUP BY f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA_ID \n" +
+                                "ORDER BY AMOUNT DESC, f.NAME ASC\n" +
+                                "LIMIT ?",
                         Statement.RETURN_GENERATED_KEYS);
         ) {
             log.debug("Succesfully establihed connection to databae - " + params.getUrl());
             List<Film> mostLikedFilms = new ArrayList<>();
             preparedStatement.setInt(1, amount);
             ResultSet resultSet = preparedStatement.executeQuery();
+            log.trace("Got " + resultSet.getFetchSize() + " popular films.");
             while (resultSet.next()) {
                 Film filmToAdd = new Film(
                         resultSet.getInt(1),
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getDate(4).toLocalDate(),
-                        Duration.ofMinutes(resultSet.getLong(5)),
-                        mpaStorage.getMPA(resultSet.getInt(6)).get()
+                        resultSet.getLong(5),
+                        mpaStorage.getMPA(resultSet.getInt(6)).get(),
+                        genreStorage.getFilmGenres(resultSet.getInt(1))
                 );
                 for (Integer userId : getFilmLikes(filmToAdd.getId())) {
                     filmToAdd.likeFilm(userId);
