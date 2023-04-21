@@ -15,7 +15,7 @@ import org.springframework.test.context.jdbc.SqlGroup;
                         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         }
 )
-public class DBFilmStorageTests extends FilmStorageTests {
+public class DBFilmStorageTest extends FilmStorageTest{
 
     @Autowired
     DbFilmStorage testDbStorage;

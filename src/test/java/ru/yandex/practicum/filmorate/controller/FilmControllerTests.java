@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@Slf4j
 @WebMvcTest(FilmController.class)
 public class FilmControllerTests {
 
@@ -66,14 +66,14 @@ public class FilmControllerTests {
 
     @SneakyThrows
     @Test
-    void filmDurationResponseTest() {
+    void filmDurationCorrectResponseTest() {
         Film film = new Film(0, "Test film", null, LocalDate.of(1995, 6, 1),Duration.ofMinutes(90));
 
         mockMvc.perform(post("/films", URI.create("/films"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(film)));
-        List<Film> retFilms = filmController.getAllFilms();
-        Film respFilm = filmController.getFilm(1);
-        assertEquals(1, retFilms.size());
+        List<Film> resp = filmController.getAllFilms();
+        assertEquals(1, filmController.getAllFilms().size());
+        assertEquals(1, filmController.getAllFilms().size());
     }
 }

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 
 import java.time.Duration;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public abstract class FilmStorageTests {
+public abstract class FilmStorageTest {
 
     FilmStorage testFilmStorage;
 
