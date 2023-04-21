@@ -42,7 +42,9 @@ public abstract class UserStorageTests {
         User testUser = getValidUserForTest();
         testUser.setId(-1);
 
-        assertThrows(IncorrectEntityIDException.class, () ->  {testUserStorage.addUser(testUser);});
+        assertThrows(IncorrectEntityIDException.class, () ->  {
+            testUserStorage.addUser(testUser);
+        });
         assertEquals(0, testUserStorage.getAllUsers().size());
 
     }
@@ -69,7 +71,9 @@ public abstract class UserStorageTests {
 
         User deleteUser = getValidUserForTest();
         deleteUser.setId(-1);
-        assertThrows(UserNotFoundException.class, () -> { testUserStorage.deleteUser(deleteUser); });
+        assertThrows(UserNotFoundException.class, () -> {
+            testUserStorage.deleteUser(deleteUser);
+        });
 
         assertEquals(1, testUserStorage.getAllUsers().size());
     }
@@ -111,7 +115,9 @@ public abstract class UserStorageTests {
                 LocalDate.of(2002, 10, 10)
         );
 
-        assertThrows(UserNotFoundException.class, () -> { testUserStorage.updateUser(newUpdateUser); });
+        assertThrows(UserNotFoundException.class, () -> {
+            testUserStorage.updateUser(newUpdateUser);
+        });
     }
 
     @Test
@@ -140,7 +146,9 @@ public abstract class UserStorageTests {
         testFriend.setLogin("Friend");
         testUserStorage.addUser(testFriend);
 
-        assertThrows(Exception.class, () -> {testUserStorage.saveFriendShip(1, 2);});
+        assertThrows(Exception.class, () -> {
+            testUserStorage.saveFriendShip(1, 2);
+        });
     }
 
     @Test
@@ -150,7 +158,9 @@ public abstract class UserStorageTests {
         testFriend.setLogin("Friend");
         testUserStorage.addUser(testFriend);
 
-        assertThrows(Exception.class, () -> {testUserStorage.saveFriendShip(2, 1);});
+        assertThrows(Exception.class, () -> {
+            testUserStorage.saveFriendShip(2, 1);
+        });
     }
 
     @Test
@@ -197,7 +207,9 @@ public abstract class UserStorageTests {
         assertEquals(0, testUserStorage.getUser(2).getFriends().size());
         assertFalse(testUserStorage.getUser(2).getFriends().contains(1));
 
-        assertThrows(Exception.class, () -> {testUserStorage.eraseFrienShip(1, 3);});
+        assertThrows(Exception.class, () -> {
+            testUserStorage.eraseFrienShip(1, 3);
+        });
         assertEquals(1, testUserStorage.getUser(1).getFriends().size());
         assertTrue(testUserStorage.getUser(1).getFriends().contains(2));
         assertEquals(0, testUserStorage.getUser(2).getFriends().size());

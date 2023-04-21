@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 
 @SpringBootTest
-@SqlGroup(
-        {
+@SqlGroup({
+
                 @Sql(scripts = {"classpath:schema.sql"},
                         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         }

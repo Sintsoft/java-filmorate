@@ -11,7 +11,7 @@ import java.util.*;
 
 @Slf4j
 @Component
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
 
     Map<Integer, User> inMemoryStorage = new TreeMap<>();
     int userIdIterator = 1;
@@ -86,7 +86,7 @@ public class InMemoryUserStorage implements UserStorage{
     public List<User> getCommonFriends(int userid, int otherId) {
         List<User> commonFriends = new ArrayList<>();
         Set<Integer> userfriends = inMemoryStorage.get(userid).getFriends();
-        for(Integer othersFriendId : inMemoryStorage.get(otherId).getFriends()) {
+        for (Integer othersFriendId : inMemoryStorage.get(otherId).getFriends()) {
             if (userfriends.contains(othersFriendId)) {
                 commonFriends.add(inMemoryStorage.get(otherId));
             }

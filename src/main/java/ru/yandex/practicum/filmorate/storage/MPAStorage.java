@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.utility.DataBaseConnectionParams;
-import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionEхception;
+import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class MPAStorage {
             return returnMPA;
         } catch (SQLException e) {
             log.error("Failed getting film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get film");
+            throw new DatabaseConnectionException("Failed to get film");
         }
     }
 
@@ -71,7 +71,7 @@ public class MPAStorage {
             return returnMPA;
         } catch (SQLException e) {
             log.error("Failed getting film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get film");
+            throw new DatabaseConnectionException("Failed to get film");
         }
     }
 }

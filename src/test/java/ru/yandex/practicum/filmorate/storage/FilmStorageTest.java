@@ -43,7 +43,9 @@ public abstract class FilmStorageTest {
         Film testFilm = getValidFilmForTest();
         testFilm.setId(-1);
 
-        assertThrows(IncorrectEntityIDException.class, () ->  {testFilmStorage.addFilm(testFilm);});
+        assertThrows(IncorrectEntityIDException.class, () ->  {
+            testFilmStorage.addFilm(testFilm);
+        });
         assertEquals(0, testFilmStorage.getAllFilms().size());
     }
 
@@ -69,7 +71,9 @@ public abstract class FilmStorageTest {
 
         testFilm.setId(15);
 
-        assertThrows(Exception.class, () -> {testFilmStorage.deleteFilm(testFilm);});
+        assertThrows(Exception.class, () -> {
+            testFilmStorage.deleteFilm(testFilm);
+        });
         assertEquals(1, testFilmStorage.getAllFilms().size());
     }
 
@@ -96,7 +100,9 @@ public abstract class FilmStorageTest {
 
         testFilm.setId(15);
 
-        assertThrows(Exception.class, () -> {testFilmStorage.updateFilm(testFilm);});
+        assertThrows(Exception.class, () -> {
+            testFilmStorage.updateFilm(testFilm);
+        });
     }
 
 }

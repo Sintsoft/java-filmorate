@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utility.DataBaseConnectionParams;
-import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionEхception;
+import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionException;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
@@ -55,7 +55,7 @@ public class DbUserStorage implements UserStorage {
             }
         } catch (SQLException e) {
             log.error("Failed adding user due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to add user");
+            throw new DatabaseConnectionException("Failed to add user");
         }
     }
 
@@ -75,14 +75,14 @@ public class DbUserStorage implements UserStorage {
             log.debug("Succesfully establihed connection to databae - " + params.getUrl());
             preparedStatement.setInt(1, user.getId());
             int rows = preparedStatement.executeUpdate();
-            if (rows == 0 ) {
+            if (rows == 0) {
                 log.trace("Wrong user id. Throwing eception");
                 throw new UserNotFoundException("No user with id - " + user.getId());
             }
             log.trace("Succesfully removed user!");
         } catch (SQLException e) {
             log.error("Failed delete user due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to delete user");
+            throw new DatabaseConnectionException("Failed to delete user");
         }
     }
 
@@ -106,14 +106,14 @@ public class DbUserStorage implements UserStorage {
             preparedStatement.setDate(4, Date.valueOf(user.getBirthday()));
             preparedStatement.setInt(5, user.getId());
             int rows = preparedStatement.executeUpdate();
-            if (rows == 0 ) {
+            if (rows == 0) {
                 log.trace("Wrong user id. Throwing eception");
                 throw new UserNotFoundException("No user with id - " + user.getId());
             }
             log.trace("Succesfully removed user!");
         } catch (SQLException e) {
             log.error("Failed delete user due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to delete user");
+            throw new DatabaseConnectionException("Failed to delete user");
         }
     }
 
@@ -149,7 +149,7 @@ public class DbUserStorage implements UserStorage {
             return returnUser;
         } catch (SQLException e) {
             log.error("Failed getting user due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get user");
+            throw new DatabaseConnectionException("Failed to get user");
         }
     }
 
@@ -185,7 +185,7 @@ public class DbUserStorage implements UserStorage {
             return allUsers;
         } catch (SQLException e) {
             log.error("Failed get all users due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get all users user");
+            throw new DatabaseConnectionException("Failed to get all users user");
         }
     }
 
@@ -207,7 +207,7 @@ public class DbUserStorage implements UserStorage {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             log.error("Failed get all users due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to add firend " + friendId + " to user " + userId);
+            throw new DatabaseConnectionException("Failed to add firend " + friendId + " to user " + userId);
         }
     }
 
@@ -227,13 +227,13 @@ public class DbUserStorage implements UserStorage {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, friendId);
             int rows = preparedStatement.executeUpdate();
-            if (rows == 0 ) {
+            if (rows == 0) {
                 log.trace("Wrong user id. Throwing eception");
                 throw new UserNotFoundException("Unable to erase friendship beetween users");
             }
         } catch (SQLException e) {
             log.error("Failed get all users due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to add firend " + friendId + " to user " + userId);
+            throw new DatabaseConnectionException("Failed to add firend " + friendId + " to user " + userId);
         }
     }
 
@@ -269,7 +269,7 @@ public class DbUserStorage implements UserStorage {
             return allUsers;
         } catch (SQLException e) {
             log.error("Failed get all users due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get all users user");
+            throw new DatabaseConnectionException("Failed to get all users user");
         }
     }
 
@@ -297,7 +297,7 @@ public class DbUserStorage implements UserStorage {
             return friendsSet;
         } catch (SQLException e) {
             log.error("Failed get users friends due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get all users user");
+            throw new DatabaseConnectionException("Failed to get all users user");
         }
     }
 }

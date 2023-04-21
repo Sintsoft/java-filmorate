@@ -9,13 +9,12 @@ import org.springframework.test.context.jdbc.SqlGroup;
 
 @Slf4j
 @SpringBootTest
-@SqlGroup(
-        {
+@SqlGroup({
                 @Sql(scripts = {"classpath:schema.sql"},
                         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         }
 )
-public class DBFilmStorageTest extends FilmStorageTest{
+public class DBFilmStorageTests extends FilmStorageTest {
 
     @Autowired
     DbFilmStorage testDbStorage;

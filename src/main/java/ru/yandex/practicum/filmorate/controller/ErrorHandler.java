@@ -48,7 +48,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleDataBaseConnectionException(final DatabaseConnectionEхception e) {
+    public ErrorResponse handleDatabaseConnectionException(final DatabaseConnectionException e) {
         return new ErrorResponse("Internal DB exception");
     }
 

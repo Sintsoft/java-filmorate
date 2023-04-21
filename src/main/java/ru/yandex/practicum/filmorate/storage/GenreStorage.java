@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.utility.DataBaseConnectionParams;
-import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionEхception;
+import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionException;
 
 import java.sql.*;
 import java.util.*;
@@ -41,7 +41,7 @@ public class GenreStorage {
             return returnGenre;
         } catch (SQLException e) {
             log.error("Failed getting film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get genre");
+            throw new DatabaseConnectionException("Failed to get genre");
         }
     }
 
@@ -70,7 +70,7 @@ public class GenreStorage {
             return returnGenre;
         } catch (SQLException e) {
             log.error("Failed getting film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get all genres");
+            throw new DatabaseConnectionException("Failed to get all genres");
         }
     }
 
@@ -104,7 +104,7 @@ public class GenreStorage {
             return returnGenre;
         } catch (SQLException e) {
             log.error("Failed getting film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get film genres");
+            throw new DatabaseConnectionException("Failed to get film genres");
         }
     }
 
@@ -136,7 +136,7 @@ public class GenreStorage {
             }
         } catch (SQLException e) {
             log.error("Failed getting film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get film");
+            throw new DatabaseConnectionException("Failed to get film");
         }
     }
 
@@ -157,7 +157,7 @@ public class GenreStorage {
             log.trace("Succesfull film genres drop");
         } catch (SQLException e) {
             log.error("Failed getting film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get film");
+            throw new DatabaseConnectionException("Failed to get film");
         }
     }
 }

@@ -105,7 +105,9 @@ public class UserTests {
                 "email@yandex.ru",
                 LocalDate.of(2000,1,1)
         );
-        assertThrows(IncorrectEntityIDException.class, () -> {testUser.addFriend(-2);});
+        assertThrows(IncorrectEntityIDException.class, () -> {
+            testUser.addFriend(-2);
+        });
     }
 
     @Test
@@ -134,6 +136,8 @@ public class UserTests {
         );
         testUser.addFriend(2);
         assertEquals(1, testUser.getFriends().size());
-        assertThrows(IncorrectEntityIDException.class, () -> {testUser.removeFriend(3);});
+        assertThrows(IncorrectEntityIDException.class, () -> {
+            testUser.removeFriend(3);
+        });
     }
 }

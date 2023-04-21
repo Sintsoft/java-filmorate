@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy=FilmReleaseConstraintValidator.class)
+@Constraint(validatedBy = FilmReleaseConstraintValidator.class)
 public @interface FilmReleaseConstraint {
     String message() default "Relase date shoul be after 10.06.1895";
     Class<?>[] groups() default {};

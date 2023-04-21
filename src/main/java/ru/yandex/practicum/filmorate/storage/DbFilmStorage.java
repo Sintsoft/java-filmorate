@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.utility.DataBaseConnectionParams;
-import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionEхception;
+import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionException;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 
@@ -62,7 +62,7 @@ public class DbFilmStorage implements FilmStorage {
             genreStorage.saveFilmGenres(film);
         } catch (SQLException e) {
             log.error("Failed adding film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to add film");
+            throw new DatabaseConnectionException("Failed to add film");
         }
 
     }
@@ -90,7 +90,7 @@ public class DbFilmStorage implements FilmStorage {
             log.trace("Succesfully removed film!");
         } catch (SQLException e) {
             log.error("Failed delete film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to delete film");
+            throw new DatabaseConnectionException("Failed to delete film");
         }
     }
 
@@ -124,7 +124,7 @@ public class DbFilmStorage implements FilmStorage {
             log.trace("Succesfully updated film! " + film);
         } catch (SQLException e) {
             log.error("Failed delete film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to delete film");
+            throw new DatabaseConnectionException("Failed to delete film");
         }
     }
 
@@ -163,7 +163,7 @@ public class DbFilmStorage implements FilmStorage {
             return returnFilm;
         } catch (SQLException e) {
             log.error("Failed getting film due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get film");
+            throw new DatabaseConnectionException("Failed to get film");
         }
     }
 
@@ -200,7 +200,7 @@ public class DbFilmStorage implements FilmStorage {
             return allFilms;
         } catch (SQLException e) {
             log.error("Failed get films friends due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get all films film");
+            throw new DatabaseConnectionException("Failed to get all films film");
         }
     }
 
@@ -224,7 +224,7 @@ public class DbFilmStorage implements FilmStorage {
             log.trace("User "  + userId + " like to film " + filmId + " saved");
         } catch (SQLException e) {
             log.error("Failed get all users due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to save liked film " + filmId + " by user " + userId);
+            throw new DatabaseConnectionException("Failed to save liked film " + filmId + " by user " + userId);
         }
     }
 
@@ -251,7 +251,7 @@ public class DbFilmStorage implements FilmStorage {
             }
         } catch (SQLException e) {
             log.error("Failed get films friends due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to save liked film " + filmId + " by user " + userId);
+            throw new DatabaseConnectionException("Failed to save liked film " + filmId + " by user " + userId);
         }
     }
 
@@ -297,7 +297,7 @@ public class DbFilmStorage implements FilmStorage {
             return mostLikedFilms;
         } catch (SQLException e) {
             log.error("Failed get films friends due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get most popular films");
+            throw new DatabaseConnectionException("Failed to get most popular films");
         }
     }
 
@@ -325,7 +325,7 @@ public class DbFilmStorage implements FilmStorage {
             return likesSet;
         } catch (SQLException e) {
             log.error("Failed get films friends due to: " + e.getClass());
-            throw new DatabaseConnectionEхception("Failed to get all films film");
+            throw new DatabaseConnectionException("Failed to get all films film");
         }
     }
 }

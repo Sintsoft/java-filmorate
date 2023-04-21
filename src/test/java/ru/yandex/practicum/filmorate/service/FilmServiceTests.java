@@ -11,13 +11,10 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.MPA;
 
-
-import java.time.Duration;
 import java.time.LocalDate;
 
 @SpringBootTest
-@SqlGroup(
-        {
+@SqlGroup({
                 @Sql(scripts = {"classpath:schema.sql"},
                         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         }
