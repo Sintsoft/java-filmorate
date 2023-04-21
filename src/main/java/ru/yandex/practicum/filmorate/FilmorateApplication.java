@@ -12,17 +12,4 @@ public class FilmorateApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FilmorateApplication.class, args);
 	}
-	/*
-	@Autowired
-	DbUserStorage params;
-
-
-
-	@Bean
-	CommandLineRunner init() {
-		return (args) -> {
-			params.addUser(null);
-		};
-	}
-	*/
 }
