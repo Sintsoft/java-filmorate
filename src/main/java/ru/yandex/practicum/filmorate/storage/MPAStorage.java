@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.utility.DataBaseConnectionParams;
 import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionEхception;
-import ru.yandex.practicum.filmorate.utility.exceptions.EntityNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;

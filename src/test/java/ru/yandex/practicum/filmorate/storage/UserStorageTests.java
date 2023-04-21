@@ -3,14 +3,12 @@ package ru.yandex.practicum.filmorate.storage;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionEхception;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.sql.SQLException;
 import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public abstract class UserStorageTests {

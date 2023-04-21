@@ -4,12 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
-import javax.validation.ValidationException;
 import java.util.*;
 import java.util.stream.Collectors;
 

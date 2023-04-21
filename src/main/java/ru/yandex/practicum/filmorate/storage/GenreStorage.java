@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.utility.DataBaseConnectionParams;
 import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionEхception;
 

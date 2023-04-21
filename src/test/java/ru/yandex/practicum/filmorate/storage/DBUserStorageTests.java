@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
