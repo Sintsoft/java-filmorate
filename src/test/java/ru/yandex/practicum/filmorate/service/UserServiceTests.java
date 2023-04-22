@@ -10,8 +10,9 @@ import ru.yandex.practicum.filmorate.utility.exceptions.EntityValidationExceptio
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
-import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @SqlGroup({
@@ -25,7 +26,7 @@ public class UserServiceTests {
     @Autowired
     UserService testUserService;
 
-    protected User getValidUserForTest() {
+    User getValidUserForTest() {
         return new User(
                 0,
                 "User Name",

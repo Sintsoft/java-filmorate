@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserTests {
 
     // Создадим валидатор, для валидации полей
-    private Validator validator;
+    Validator validator;
 
     @BeforeEach
     void setValidator() {

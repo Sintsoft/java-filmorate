@@ -15,7 +15,7 @@ public abstract class UserStorageTests {
 
     UserStorage testUserStorage;
 
-    protected User getValidUserForTest() {
+    User getValidUserForTest() {
         return new User(
                 0,
                 "User Name",
@@ -29,7 +29,6 @@ public abstract class UserStorageTests {
     void addVaildUserTest() {
         User testUser = getValidUserForTest();
         testUserStorage.addUser(testUser);
-        //testUser.setId(1);;
 
         User userFromStorage = testUserStorage.getUser(1);
 

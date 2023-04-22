@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilmTests {
 
     // Создадим валидатор, для валидации полей
-    private Validator validator;
+    Validator validator;
 
     @BeforeEach
     void setValidator() {
