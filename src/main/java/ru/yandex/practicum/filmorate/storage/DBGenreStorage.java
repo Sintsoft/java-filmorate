@@ -22,15 +22,15 @@ import java.util.Optional;
 @Primary
 public class DBGenreStorage implements GenreStorage {
 
-    private final String GET_GENRE_QUERY = "SELECT * FROM GENRE WHERE ID = ?";
-    private final String GET_ALL_GENRES_QUERY = "SELECT * FROM GENRE";
-    private final String GET_FILM_GENRES_QUERY = "SELECT DISTINCT g.*\n" +
+    private static final String GET_GENRE_QUERY = "SELECT * FROM GENRE WHERE ID = ?";
+    private static final String GET_ALL_GENRES_QUERY = "SELECT * FROM GENRE";
+    private static final String GET_FILM_GENRES_QUERY = "SELECT DISTINCT g.*\n" +
             "FROM FILMGENRE f \n" +
             "LEFT JOIN GENRE g\n" +
             "\tON g.ID = f.GENRE_ID \n" +
             "WHERE f.FILM_ID = ?";
-    private final String INSERT_FILM_GENRE_QUERY = "INSERT INTO FILMGENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
-    private final String DELETE_FILM_GENRES_QUERY = "DELETE FROM FILMGENRE WHERE FILM_ID = ?";
+    private static final String INSERT_FILM_GENRE_QUERY = "INSERT INTO FILMGENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
+    private static final String DELETE_FILM_GENRES_QUERY = "DELETE FROM FILMGENRE WHERE FILM_ID = ?";
 
     @Autowired
     JdbcTemplate jdbc;

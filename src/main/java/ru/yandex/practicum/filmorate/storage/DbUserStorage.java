@@ -27,21 +27,21 @@ import java.util.Set;
 @Primary
 public class DbUserStorage implements UserStorage {
 
-    private final String INSERT_USER_QUERY = "INSERT INTO USERS (USERNAME, LOGIN, EMAIL, BIRTHDAY) " +
+    private static final String INSERT_USER_QUERY = "INSERT INTO USERS (USERNAME, LOGIN, EMAIL, BIRTHDAY) " +
             "VALUES (?, ?, ?, ?)";
-    private final String DELETE_USER_QUERY = "DELETE FROM USERS WHERE ID = ?";
-    private final String UPDATE_USER_QUERY = "UPDATE USERS SET USERNAME = ?, LOGIN = ?, EMAIL = ?, BIRTHDAY = ? " +
+    private static final String DELETE_USER_QUERY = "DELETE FROM USERS WHERE ID = ?";
+    private static final String UPDATE_USER_QUERY = "UPDATE USERS SET USERNAME = ?, LOGIN = ?, EMAIL = ?, BIRTHDAY = ? " +
             "WHERE ID = ?";
-    private final String GET_USER_QUERY = "SELECT * FROM USERS WHERE id = ?";
-    private final String GET_ALL_USERS_QUERY = "SELECT * FROM USERS";
-    private final String GET_USER_FRIENDS_QUERY = "SELECT ACCEPTER_ID FROM FRIENDS WHERE REQUESTER_ID = ?";
-    private final String GET_COMMON_USERS_FRIENS_QUERY = "SELECT DISTINCT f1.ACCEPTER_ID \n" +
+    private static final String GET_USER_QUERY = "SELECT * FROM USERS WHERE id = ?";
+    private static final String GET_ALL_USERS_QUERY = "SELECT * FROM USERS";
+    private static final String GET_USER_FRIENDS_QUERY = "SELECT ACCEPTER_ID FROM FRIENDS WHERE REQUESTER_ID = ?";
+    private static final String GET_COMMON_USERS_FRIENS_QUERY = "SELECT DISTINCT f1.ACCEPTER_ID \n" +
             "FROM FRIENDS f1\n" +
             "INNER JOIN FRIENDS f2\n" +
             "\tON f1.ACCEPTER_ID = f2.ACCEPTER_ID AND f1.REQUESTER_ID != f2.REQUESTER_ID \n" +
             "WHERE f1.REQUESTER_ID = ? AND f2.REQUESTER_ID = ?";
-    private final String INSERT_FRIENDSHIP_QUERY = "INSERT INTO FRIENDS (REQUESTER_ID, ACCEPTER_ID) VALUES (?, ?)";
-    private final String DELETE_FRIENDSHIP_QUERY = "DELETE FROM FRIENDS WHERE REQUESTER_ID = ? AND ACCEPTER_ID = ?";
+    private static final String INSERT_FRIENDSHIP_QUERY = "INSERT INTO FRIENDS (REQUESTER_ID, ACCEPTER_ID) VALUES (?, ?)";
+    private static final String DELETE_FRIENDSHIP_QUERY = "DELETE FROM FRIENDS WHERE REQUESTER_ID = ? AND ACCEPTER_ID = ?";
 
     @Autowired
     DataBaseConnectionParams params;

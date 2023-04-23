@@ -21,8 +21,8 @@ import java.util.Optional;
 @Primary
 public class MPAStorage {
 
-    private final String GET_MPA_QUERY = "SELECT * FROM MPA WHERE ID = ?";
-    private final String GET_ALL_MPA_QUERY = "SELECT * FROM MPA";
+    private static final String GET_MPA_QUERY = "SELECT * FROM MPA WHERE ID = ?";
+    private static final String GET_ALL_MPA_QUERY = "SELECT * FROM MPA";
 
     @Autowired
     JdbcTemplate jdbc;
