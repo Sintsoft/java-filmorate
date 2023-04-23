@@ -26,23 +26,23 @@ import java.util.TreeSet;
 @Primary
 public class DbFilmStorage implements FilmStorage {
 
-    private final String INSERT_FILM_QUERY = "INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) " +
+    private static final String INSERT_FILM_QUERY = "INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) " +
             "VALUES (?, ?, ?, ?, ?)";
-    private final String DELETE_FILM_QUERY = "DELETE FROM FILMS WHERE ID = ?";
-    private final String UPDATE_FILM_QUERY = "UPDATE FILMS SET NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, " +
+    private static final String DELETE_FILM_QUERY = "DELETE FROM FILMS WHERE ID = ?";
+    private static final String UPDATE_FILM_QUERY = "UPDATE FILMS SET NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, " +
             "DURATION = ?, MPA_ID = ? WHERE ID = ?";
-    private final String GET_FILM_QUERY = "SELECT * FROM FILMS WHERE id = ?";
-    private final String GET_ALL_FILMS_QUERY = "SELECT * FROM FILMS";
-    private final String INSERT_LIKE_QUERY = "INSERT INTO LIKES (USER_ID, FILM_ID) VALUES (?, ?)";
-    private final String DELETE_LIKE_QUERY = "DELETE FROM LIKES WHERE USER_ID = ? AND FILM_ID = ?";
-    private final String GET_MOST_LIKED_FILMS_QUERY = "SELECT f.*, COUNT(l.USER_ID) AS AMOUNT\n" +
+    private static final String GET_FILM_QUERY = "SELECT * FROM FILMS WHERE id = ?";
+    private static final String GET_ALL_FILMS_QUERY = "SELECT * FROM FILMS";
+    private static final String INSERT_LIKE_QUERY = "INSERT INTO LIKES (USER_ID, FILM_ID) VALUES (?, ?)";
+    private static final String DELETE_LIKE_QUERY = "DELETE FROM LIKES WHERE USER_ID = ? AND FILM_ID = ?";
+    private static final String GET_MOST_LIKED_FILMS_QUERY = "SELECT f.*, COUNT(l.USER_ID) AS AMOUNT\n" +
             "FROM FILMS f \n" +
             "LEFT JOIN LIKES l\n" +
             "\tON f.ID = l.FILM_ID \n" +
             "GROUP BY f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA_ID \n" +
             "ORDER BY AMOUNT DESC, f.NAME ASC\n" +
             "LIMIT ?";
-    private final String GET_FILM_LIKES = "SELECT USER_ID FROM LIKES WHERE FILM_ID = ?";
+    private static final String GET_FILM_LIKES = "SELECT USER_ID FROM LIKES WHERE FILM_ID = ?";
 
     @Autowired
     MPAStorage mpaStorage;
@@ -61,7 +61,7 @@ public class DbFilmStorage implements FilmStorage {
             throw new IncorrectEntityIDException("Wrong method! User with id should be equal to 0");
         }
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbc.update(connection ->{
+        jdbc.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(
                         INSERT_FILM_QUERY,
                     Statement.RETURN_GENERATED_KEYS
