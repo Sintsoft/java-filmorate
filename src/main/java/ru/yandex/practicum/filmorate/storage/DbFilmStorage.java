@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.utility.exceptions.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
@@ -75,6 +76,7 @@ public class DbFilmStorage implements FilmStorage {
             }, keyHolder
         );
         film.setId(keyHolder.getKey().intValue());
+        genreStorage.saveFilmGenres(film);
     }
 
     @Override
@@ -99,6 +101,7 @@ public class DbFilmStorage implements FilmStorage {
             film.getMpa().getId(),
             film.getId()
         );
+        genreStorage.saveFilmGenres(film);
         if (result == 0) {
             log.trace("Wrong film id. Throwing eception");
             throw new FilmNotFoundException("No film with id - " + film.getId());
@@ -118,6 +121,7 @@ public class DbFilmStorage implements FilmStorage {
             for (Integer userId : getFilmLikes(film.getId())) {
                 film.likeFilm(userId);
             }
+            film.setGenres(genreStorage.getFilmGenres(film.getId()));
         } catch (EmptyResultDataAccessException e) {
             log.info("Film with id = " + id + " not found.");
         }
@@ -142,7 +146,11 @@ public class DbFilmStorage implements FilmStorage {
     @Override
     public void removeLike(int userId, int filmId) {
         log.trace("Level: Storage. Method: getFilmById.");
-        jdbc.update(DELETE_LIKE_QUERY, new Object[]{userId, filmId});
+        int result = jdbc.update(DELETE_LIKE_QUERY, new Object[]{userId, filmId});
+        if (result == 0) {
+            log.info("Deletion failed.");
+            throw new EntityNotFoundException("Like deletion failed");
+        }
     }
 
     @Override

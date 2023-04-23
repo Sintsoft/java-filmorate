@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.storage;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
@@ -14,6 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @EnableConfigurationProperties
+@SqlGroup({
+        @Sql(scripts = {"classpath:schema.sql"},
+                executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+})
 public abstract class FilmStorageTest {
 
     FilmStorage testFilmStorage;

@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.storage;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
@@ -11,6 +13,11 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@SqlGroup({
+        @Sql(scripts = {"classpath:schema.sql"},
+                executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+}
+)
 public abstract class UserStorageTests {
 
     UserStorage testUserStorage;
@@ -53,6 +60,7 @@ public abstract class UserStorageTests {
     void deleteVaildUserTest() {
         User testUser = getValidUserForTest();
         testUserStorage.addUser(testUser);
+
 
         assertEquals(1, testUserStorage.getAllUsers().size());
         assertEquals(testUser, testUserStorage.getUser(1));

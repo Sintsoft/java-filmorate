@@ -11,7 +11,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.utility.databasework.DataBaseConnectionParams;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
@@ -44,11 +43,7 @@ public class DbUserStorage implements UserStorage {
     private static final String DELETE_FRIENDSHIP_QUERY = "DELETE FROM FRIENDS WHERE REQUESTER_ID = ? AND ACCEPTER_ID = ?";
 
     @Autowired
-    DataBaseConnectionParams params;
-
-    @Autowired
     JdbcTemplate jdbc;
-
 
 
     @Override
