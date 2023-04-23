@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.MPA;
-import ru.yandex.practicum.filmorate.utility.databasework.DataBaseConnectionParams;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,9 +23,6 @@ public class MPAStorage {
 
     private final String GET_MPA_QUERY = "SELECT * FROM MPA WHERE ID = ?";
     private final String GET_ALL_MPA_QUERY = "SELECT * FROM MPA";
-
-    @Autowired
-    DataBaseConnectionParams params;
 
     @Autowired
     JdbcTemplate jdbc;
