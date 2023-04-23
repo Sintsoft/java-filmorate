@@ -3,15 +3,16 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.MPA;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @SqlGroup({
@@ -28,7 +29,7 @@ public class FilmServiceTests {
     UserService userService;
 
     Film createTestFilm() {
-        return new Film(0, "Test film", "Test film description", LocalDate.of(2022,2,2), 90, new MPA(1), null);
+        return new Film(0, "Test film", "Test film description", LocalDate.of(2022,2,2), 90, new MPA(1));
     }
 
     User createTestUser() {

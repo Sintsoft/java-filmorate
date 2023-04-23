@@ -34,7 +34,6 @@ public class FilmTests {
                     null,
                     null,
                     0,
-                    null,
                     null
             );
         });
@@ -48,7 +47,6 @@ public class FilmTests {
                 "Film description",
                 LocalDate.of(1999, 12, 20),
                 90,
-                null,
                 null
         );
         Set<ConstraintViolation<Film>> violations = validator.validate(testFilm);
@@ -64,7 +62,6 @@ public class FilmTests {
                 "Film description",
                 LocalDate.of(1880, 12, 20),
                 90,
-                null,
                 null
         );
         Set<ConstraintViolation<Film>> violations = validator.validate(testFilm);
@@ -79,7 +76,6 @@ public class FilmTests {
                 "Film description",
                 LocalDate.of(1880, 12, 20),
                 90,
-                null,
                 null
         );
         testFilm.likeFilm(1);
@@ -94,7 +90,6 @@ public class FilmTests {
                 "Film description",
                 LocalDate.of(1880, 12, 20),
                 90,
-                null,
                 null
         );
         testFilm.likeFilm(1);

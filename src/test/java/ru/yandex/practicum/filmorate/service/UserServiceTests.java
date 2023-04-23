@@ -90,7 +90,8 @@ public class UserServiceTests {
     public void deleteVaildUserTest() {
         User testUser = getValidUserForTest();
         testUserService.addUser(testUser);
-        assertEquals(1, testUser.getId());
+        testUser.setId(1);
+        assertEquals(testUser, testUserService.getUserById(1));
 
         testUserService.deleteUser(testUser);
 

@@ -25,8 +25,7 @@ public abstract class FilmStorageTest {
                 "Film description",
                 LocalDate.of(1999, 12, 20),
                 90,
-                new MPA(1),
-                null
+                new MPA(1)
         );
     }
 

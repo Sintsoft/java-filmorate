@@ -28,7 +28,7 @@ public class DbFilmStorage implements FilmStorage {
     MPAStorage mpaStorage;
 
     @Autowired
-    GenreStorage genreStorage;
+    DBGenreStorage genreStorage;
 
     @Override
     public void addFilm(Film film) {
@@ -152,9 +152,9 @@ public class DbFilmStorage implements FilmStorage {
                         resultSet.getString(3),
                         resultSet.getDate(4).toLocalDate(),
                         resultSet.getLong(5),
-                        mpaStorage.getMPA(resultSet.getInt(6)).get(),
-                        genreStorage.getFilmGenres(resultSet.getInt(1))
+                        mpaStorage.getMPA(resultSet.getInt(6)).get()
                 );
+                returnFilm.setGenres(genreStorage.getFilmGenres(resultSet.getInt(1)));
                 for (Integer userId : getFilmLikes(returnFilm.getId())) {
                     returnFilm.likeFilm(userId);
                 }
@@ -189,9 +189,9 @@ public class DbFilmStorage implements FilmStorage {
                         resultSet.getString(3),
                         resultSet.getDate(4).toLocalDate(),
                         resultSet.getLong(5),
-                        mpaStorage.getMPA(resultSet.getInt(6)).get(),
-                        genreStorage.getFilmGenres(resultSet.getInt(1))
+                        mpaStorage.getMPA(resultSet.getInt(6)).get()
                 );
+                filmToAdd.setGenres(genreStorage.getFilmGenres(resultSet.getInt(1)));
                 for (Integer userId : getFilmLikes(filmToAdd.getId())) {
                     filmToAdd.likeFilm(userId);
                 }
@@ -286,12 +286,9 @@ public class DbFilmStorage implements FilmStorage {
                         resultSet.getString(3),
                         resultSet.getDate(4).toLocalDate(),
                         resultSet.getLong(5),
-                        mpaStorage.getMPA(resultSet.getInt(6)).get(),
-                        genreStorage.getFilmGenres(resultSet.getInt(1))
+                        mpaStorage.getMPA(resultSet.getInt(6)).get()
                 );
-                for (Integer userId : getFilmLikes(filmToAdd.getId())) {
-                    filmToAdd.likeFilm(userId);
-                }
+                filmToAdd.setGenres(genreStorage.getFilmGenres(resultSet.getInt(1)));
                 mostLikedFilms.add(filmToAdd);
             }
             return mostLikedFilms;

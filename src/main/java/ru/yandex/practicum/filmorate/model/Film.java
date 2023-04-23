@@ -40,7 +40,7 @@ public class Film {
 
     private MPA mpa;
 
-    private List<Genre> genres = new ArrayList<>();
+    private final List<Genre> genres = new ArrayList<>();
 
     private final Set<Integer> likes = new TreeSet<>();
 
@@ -50,5 +50,10 @@ public class Film {
 
     public void dislikeFilm(int userId) {
         likes.remove(userId);
+    }
+
+    public void setGenres(List<Genre> newGenres) {
+        this.genres.clear();
+        this.genres.addAll(newGenres);
     }
 }

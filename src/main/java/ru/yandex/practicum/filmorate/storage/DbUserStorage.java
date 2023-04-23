@@ -3,8 +3,11 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
@@ -13,9 +16,7 @@ import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDExcepti
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 import javax.validation.Valid;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,16 +54,21 @@ public class DbUserStorage implements UserStorage {
     @Override
     public void addUser(@Valid User user) {
         log.debug("Calling addUser");
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         if (user.getId() != 0) {
             log.trace("Added user have incorrect id - " + user.getId());
             throw new IncorrectEntityIDException("Wrong method! User with id should be equal to 0");
         }
-        jdbc.update(INSERT_USER_QUERY,
-                user.getName(),
-                user.getLogin(),
-                user.getEmail(),
-                Date.valueOf(user.getBirthday())
-                );
+        jdbc.update(connection -> {
+                    PreparedStatement ps = connection.prepareStatement(INSERT_USER_QUERY,
+                            Statement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, user.getName());
+                    ps.setString(2, user.getLogin());
+                    ps.setString(3, user.getEmail());
+                    ps.setDate(4, Date.valueOf(user.getBirthday()));
+                    return ps;
+                }, keyHolder);
+        user.setId(keyHolder.getKey().intValue());
     }
 
     @Override
@@ -95,14 +101,18 @@ public class DbUserStorage implements UserStorage {
     @Override
     public User getUser(int id) {
         log.debug("Calling getUser");
-        User user;
-        user = jdbc.queryForObject(
-                GET_USER_QUERY,
-                new Object[]{id},
-                new UserRowMapper()
-        );
-        for (Integer friendId : this.getUserFriends(user.getId())) {
-            user.addFriend(friendId);
+        User user = null;
+        try {
+            user = jdbc.queryForObject(
+                    GET_USER_QUERY,
+                    new Object[]{id},
+                    new UserRowMapper()
+            );
+            for (Integer friendId : this.getUserFriends(user.getId())) {
+                user.addFriend(friendId);
+            }
+        } catch (EmptyResultDataAccessException e) {
+            log.info("User with id = " + id + " not found.");
         }
         return user;
     }
