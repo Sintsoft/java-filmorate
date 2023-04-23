@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.yandex.practicum.filmorate.utility.DataBaseConnectionParams;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionException;
 
 
@@ -20,8 +20,7 @@ public class DataBaseConnection {
     @Autowired
     DataBaseConnectionParams params;
 
-    @Bean
-    public DataSource getConnection() {
+    private DataSource getConnection() {
         try {
             DataSourceBuilder builder = DataSourceBuilder.create();
             builder.driverClassName(params.getDriverClassName());
@@ -36,5 +35,11 @@ public class DataBaseConnection {
                     + e.getMessage());
         }
     }
+
+    @Bean
+    public JdbcTemplate getjdbcTemplate() {
+        return new JdbcTemplate(this.getConnection());
+    }
+
 
 }
