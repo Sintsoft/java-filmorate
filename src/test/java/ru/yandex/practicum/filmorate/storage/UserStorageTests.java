@@ -29,6 +29,7 @@ public abstract class UserStorageTests {
     void addVaildUserTest() {
         User testUser = getValidUserForTest();
         testUserStorage.addUser(testUser);
+        testUser.setId(1);
 
         User userFromStorage = testUserStorage.getUser(1);
 
@@ -52,6 +53,7 @@ public abstract class UserStorageTests {
     void deleteVaildUserTest() {
         User testUser = getValidUserForTest();
         testUserStorage.addUser(testUser);
+        testUser.setId(1);
 
         assertEquals(1, testUserStorage.getAllUsers().size());
         assertEquals(testUser, testUserStorage.getUser(1));
@@ -64,6 +66,7 @@ public abstract class UserStorageTests {
     void deleteInvaildUserTest() {
         User testUser = getValidUserForTest();
         testUserStorage.addUser(testUser);
+        testUser.setId(1);
 
         assertEquals(1, testUserStorage.getAllUsers().size());
         assertEquals(testUser, testUserStorage.getUser(1));
@@ -81,6 +84,7 @@ public abstract class UserStorageTests {
     void updateValidUserTest() {
         User testUser = getValidUserForTest();
         testUserStorage.addUser(testUser);
+        testUser.setId(1);
 
         assertEquals(1, testUserStorage.getAllUsers().size());
         assertEquals(testUser, testUserStorage.getUser(1));
@@ -102,6 +106,7 @@ public abstract class UserStorageTests {
     void updateInvalidUserTest() {
         User testUser = getValidUserForTest();
         testUserStorage.addUser(testUser);
+        testUser.setId(1);
 
         assertEquals(1, testUserStorage.getAllUsers().size());
         assertEquals(testUser, testUserStorage.getUser(1));

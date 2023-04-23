@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utility.DataBaseConnectionParams;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.filmorate.utility.exceptions.DatabaseConnectionExcept
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
+import javax.sql.DataSource;
 import javax.validation.Valid;
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,43 +22,34 @@ import java.util.Set;
 @Component
 @Slf4j
 @Primary
+
 public class DbUserStorage implements UserStorage {
+
+    private String USER_INSERT_QUERY = "INSERT INTO USERS (USERNAME, LOGIN, EMAIL, BIRTHDAY) " +
+            "VALUES (?, ?, ?, ?)";
 
     @Autowired
     DataBaseConnectionParams params;
 
+    @Autowired
+    DataSource connection;
+
+
     @Override
     public void addUser(@Valid User user) {
         log.debug("Calling addUser");
+        JdbcTemplate jdbc = new JdbcTemplate(this.connection);
         if (user.getId() != 0) {
             log.trace("Added user have incorrect id - " + user.getId());
             throw new IncorrectEntityIDException("Wrong method! User with id should be equal to 0");
         }
-        try (
-                Connection connection = DriverManager.getConnection(
-                        params.getUrl(),
-                        params.getUserName(),
-                        params.getPassword()
-                    );
-                PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO USERS (USERNAME, LOGIN, EMAIL, BIRTHDAY) VALUES (?, ?, ?, ?)",
-                        Statement.RETURN_GENERATED_KEYS);
-                ) {
-            log.debug("Succesfully establihed connection to databae - " + params.getUrl());
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getLogin());
-            preparedStatement.setString(3, user.getEmail());
-            preparedStatement.setDate(4, Date.valueOf(user.getBirthday()));
-            preparedStatement.executeUpdate();
-            ResultSet result = preparedStatement.getGeneratedKeys();
-            while (result.next()) {
-                log.debug("Got user id = " + result.getInt(1));
-                user.setId(result.getInt(1));
-            }
-        } catch (SQLException e) {
-            log.error("Failed adding user due to: " + e.getClass());
-            throw new DatabaseConnectionException("Failed to add user");
-        }
+        jdbc.update(USER_INSERT_QUERY,
+                user.getName(),
+                user.getLogin(),
+                user.getEmail(),
+                Date.valueOf(user.getBirthday())
+                );
+        log.error("USER GOT ID " + user.getId());
     }
 
     @Override
