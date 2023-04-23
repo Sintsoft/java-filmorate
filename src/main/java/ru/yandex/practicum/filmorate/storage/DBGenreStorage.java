@@ -9,7 +9,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.utility.databasework.DataBaseConnectionParams;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,9 +30,6 @@ public class DBGenreStorage implements GenreStorage {
             "WHERE f.FILM_ID = ?";
     private final String INSERT_FILM_GENRE_QUERY = "INSERT INTO FILMGENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
     private final String DELETE_FILM_GENRES_QUERY = "DELETE FROM FILMGENRE WHERE FILM_ID = ?";
-
-    @Autowired
-    DataBaseConnectionParams params;
 
     @Autowired
     JdbcTemplate jdbc;
