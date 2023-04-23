@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -22,7 +23,7 @@ import java.util.Optional;
 public class MPAStorage {
 
     private final String GET_MPA_QUERY = "SELECT * FROM MPA WHERE ID = ?";
-    private final String GET_ALL_MPA_QUERY = "SELECT * FROM MP";
+    private final String GET_ALL_MPA_QUERY = "SELECT * FROM MPA";
 
     @Autowired
     DataBaseConnectionParams params;
@@ -32,15 +33,20 @@ public class MPAStorage {
 
     public Optional<MPA> getMPA(int id) {
         log.trace("Level: Storage. Method: getMPA. Input: " + id);
-        return Optional.ofNullable(
-            MPA.class.cast(
-                jdbc.queryForObject(
+        Optional<MPA> mpa = Optional.empty();
+        try {
+            Object obj = jdbc.queryForObject(
                     GET_MPA_QUERY,
                     new Object[]{id},
                     new MPARowMapper()
-                )
-            )
-        );
+            );
+            if (obj != null) {
+                mpa = Optional.of(MPA.class.cast(obj));
+            }
+        } catch (EmptyResultDataAccessException e) {
+            log.info("MPA with id = " + id + " not exist");;
+        }
+        return mpa;
     }
 
     public List<MPA> getAllMPA() {

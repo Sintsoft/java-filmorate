@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -36,15 +37,20 @@ public class DBGenreStorage implements GenreStorage {
 
     public Optional<Genre> getGenre(int id) {
         log.trace("Level: Storage. Method: getGenre. Input: " + id);
-        return Optional.ofNullable(
-            Genre.class.cast(
-                jdbc.queryForObject(
+        Optional<Genre> genre = Optional.empty();
+        try {
+            Object obj = jdbc.queryForObject(
                     GET_GENRE_QUERY,
                     new Object[]{id},
                     new GenreRowMapper()
-                )
-            )
-        );
+            );
+            if (obj != null) {
+                genre = Optional.of(Genre.class.cast(obj));
+            }
+        } catch (EmptyResultDataAccessException e) {
+            log.info("Genre with id = " + id + " not exist");;
+        }
+        return genre;
     }
 
     public List<Genre> getAllGenres() {
