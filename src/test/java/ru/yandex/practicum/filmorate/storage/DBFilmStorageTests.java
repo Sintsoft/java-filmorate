@@ -21,10 +21,14 @@ public class DBFilmStorageTests extends FilmStorageTest {
     @Autowired
     DbFilmStorage testDbStorage;
 
+    @Autowired
+    DbUserStorage testDbUserStorage;
+
     @BeforeEach
     void setDB() {
         log.info("Resetting user storage");
         this.testFilmStorage = testDbStorage;
+        this.testUserStorage = testDbUserStorage;
     }
 }
 

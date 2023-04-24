@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -8,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
@@ -16,34 +16,37 @@ import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 import javax.validation.Valid;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Component
 @Slf4j
 @Primary
+@RequiredArgsConstructor
 public class DbUserStorage implements UserStorage {
 
     private static final String INSERT_USER_QUERY = "INSERT INTO USERS (USERNAME, LOGIN, EMAIL, BIRTHDAY) " +
             "VALUES (?, ?, ?, ?)";
     private static final String DELETE_USER_QUERY = "DELETE FROM USERS WHERE ID = ?";
-    private static final String UPDATE_USER_QUERY = "UPDATE USERS SET USERNAME = ?, LOGIN = ?, EMAIL = ?, BIRTHDAY = ? " +
-            "WHERE ID = ?";
+    private static final String UPDATE_USER_QUERY = "UPDATE USERS SET " +
+            "USERNAME = ?, LOGIN = ?, EMAIL = ?, BIRTHDAY = ? WHERE ID = ?";
     private static final String GET_USER_QUERY = "SELECT * FROM USERS WHERE id = ?";
     private static final String GET_ALL_USERS_QUERY = "SELECT * FROM USERS";
     private static final String GET_USER_FRIENDS_QUERY = "SELECT ACCEPTER_ID FROM FRIENDS WHERE REQUESTER_ID = ?";
-    private static final String GET_COMMON_USERS_FRIENS_QUERY = "SELECT DISTINCT f1.ACCEPTER_ID \n" +
-            "FROM FRIENDS f1\n" +
-            "INNER JOIN FRIENDS f2\n" +
-            "\tON f1.ACCEPTER_ID = f2.ACCEPTER_ID AND f1.REQUESTER_ID != f2.REQUESTER_ID \n" +
-            "WHERE f1.REQUESTER_ID = ? AND f2.REQUESTER_ID = ?";
-    private static final String INSERT_FRIENDSHIP_QUERY = "INSERT INTO FRIENDS (REQUESTER_ID, ACCEPTER_ID) VALUES (?, ?)";
-    private static final String DELETE_FRIENDSHIP_QUERY = "DELETE FROM FRIENDS WHERE REQUESTER_ID = ? AND ACCEPTER_ID = ?";
+    private static final String GET_COMMON_USERS_FRIENS_QUERY = "SELECT * FROM USERS WHERE ID IN (" +
+            "SELECT DISTINCT f1.ACCEPTER_ID " +
+            "FROM FRIENDS f1 " +
+            "INNER JOIN FRIENDS f2 " +
+            "ON f1.ACCEPTER_ID = f2.ACCEPTER_ID AND f1.REQUESTER_ID != f2.REQUESTER_ID " +
+            "WHERE f1.REQUESTER_ID = ? AND f2.REQUESTER_ID = ?)";
+    private static final String INSERT_FRIENDSHIP_QUERY = "INSERT INTO FRIENDS (REQUESTER_ID, ACCEPTER_ID) " +
+            "VALUES (?, ?)";
+    private static final String DELETE_FRIENDSHIP_QUERY = "DELETE FROM FRIENDS " +
+            "WHERE REQUESTER_ID = ? AND ACCEPTER_ID = ?";
 
     @Autowired
-    JdbcTemplate jdbc;
+    private final JdbcTemplate jdbc;
 
 
     @Override
@@ -114,21 +117,14 @@ public class DbUserStorage implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        List<User> allUsers = new ArrayList<>();
         log.debug("Calling getAllUsers");
-        SqlRowSet resultSet = jdbc.queryForRowSet(GET_ALL_USERS_QUERY);
-        while (resultSet.next()) {
-            User userToAdd = new User(
-                    resultSet.getInt(1),
-                    resultSet.getString(2),
-                    resultSet.getString(3),
-                    resultSet.getString(4),
-                    resultSet.getDate(5).toLocalDate()
-            );
-            for (Integer id : this.getUserFriends(userToAdd.getId())) {
-                userToAdd.addFriend(id);
+        List<User> allUsers = jdbc.query(
+                GET_ALL_USERS_QUERY,
+                new UserRowMapper());
+        for (User user : allUsers) {
+            for (Integer id : this.getUserFriends(user.getId())) {
+                user.addFriend(id);
             }
-            allUsers.add(userToAdd);
         }
         return allUsers;
 
@@ -151,31 +147,26 @@ public class DbUserStorage implements UserStorage {
 
     @Override
     public List<User> getCommonFriends(int userid, int otherId) {
-        List<User> commonFriends = new ArrayList<>();
         log.debug("Calling getCommonFriends");
-        SqlRowSet resultSet = jdbc.queryForRowSet(GET_COMMON_USERS_FRIENS_QUERY,
-                new Object[]{userid, otherId});
-        while (resultSet.next()) {
-            User userToAdd = this.getUser(resultSet.getInt(1));
-            for (Integer id : this.getUserFriends(userToAdd.getId())) {
-                userToAdd.addFriend(id);
+        List<User> commonFriends = jdbc.query(
+                GET_COMMON_USERS_FRIENS_QUERY,
+                new Object[]{userid, otherId},
+                new UserRowMapper());
+        for (User user : commonFriends) {
+            for (Integer id : this.getUserFriends(user.getId())) {
+                user.addFriend(id);
             }
-            commonFriends.add(userToAdd);
         }
         return commonFriends;
     }
 
     private Set<Integer> getUserFriends(int userId) {
-        Set<Integer> friendsSet = new HashSet<>();
-        log.debug("Calling getAllUsers");
-        SqlRowSet resultSet = jdbc.queryForRowSet(GET_USER_FRIENDS_QUERY,
-                new Object[]{userId});
-        while (resultSet.next()) {
-            friendsSet.add(
-                    resultSet.getInt(1)
-            );
-        }
-        return friendsSet;
+        return new TreeSet<>(
+                jdbc.queryForList(
+                        GET_USER_FRIENDS_QUERY,
+                        new Object[]{userId},
+                        Integer.class)
+        );
     }
 
     private static class UserRowMapper implements RowMapper<User> {

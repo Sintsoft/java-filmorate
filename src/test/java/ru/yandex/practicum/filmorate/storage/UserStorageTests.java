@@ -223,4 +223,28 @@ public abstract class UserStorageTests {
         assertEquals(0, testUserStorage.getUser(2).getFriends().size());
         assertFalse(testUserStorage.getUser(2).getFriends().contains(1));
     }
+
+    @Test
+    void commonFriendshipTest() {
+        User user1 = getValidUserForTest();
+        user1.setLogin("User1");
+        User user2 = getValidUserForTest();
+        user2.setLogin("User2");
+        User user3 = getValidUserForTest();
+        user3.setLogin("User3");
+
+        testUserStorage.addUser(user1);
+        testUserStorage.addUser(user2);
+        testUserStorage.addUser(user3);
+
+        assertEquals(1, user1.getId());
+        assertEquals(2, user2.getId());
+        assertEquals(3, user3.getId());
+
+        testUserStorage.saveFriendShip(1,2);
+        testUserStorage.saveFriendShip(3,2);
+
+        assertEquals(1, testUserStorage.getCommonFriends(1,3).size());
+
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.MPA;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDException;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public abstract class FilmStorageTest {
 
     FilmStorage testFilmStorage;
+    UserStorage testUserStorage;
 
     protected Film getValidFilmForTest() {
         return new Film(
@@ -111,5 +113,27 @@ public abstract class FilmStorageTest {
             testFilmStorage.updateFilm(testFilm);
         });
     }
+
+    @Test
+    void getMostLikedFilm() {
+        Film testFilm = getValidFilmForTest();
+        User testUser = new User(
+                0,
+                "User Name",
+                "Login",
+                "email@yandex.ru",
+                LocalDate.of(2000,1,1)
+        );
+
+        testFilmStorage.addFilm(testFilm);
+        testUserStorage.addUser(testUser);
+
+        assertEquals(1, testFilm.getId());
+        assertEquals(1, testUser.getId());
+
+        testFilmStorage.saveLike(1, 1);
+        assertEquals(1, testFilmStorage.getMostLikedFilms(10).size());
+    }
+
 
 }

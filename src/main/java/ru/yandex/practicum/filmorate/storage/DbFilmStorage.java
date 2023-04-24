@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -8,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.utility.exceptions.EntityNotFoundException;
@@ -17,7 +17,6 @@ import ru.yandex.practicum.filmorate.utility.exceptions.IncorrectEntityIDExcepti
 import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -25,9 +24,11 @@ import java.util.TreeSet;
 @Component
 @Slf4j
 @Primary
+@RequiredArgsConstructor
 public class DbFilmStorage implements FilmStorage {
 
-    private static final String INSERT_FILM_QUERY = "INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) " +
+    private static final String INSERT_FILM_QUERY = "INSERT INTO FILMS " +
+            "(NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) " +
             "VALUES (?, ?, ?, ?, ?)";
     private static final String DELETE_FILM_QUERY = "DELETE FROM FILMS WHERE ID = ?";
     private static final String UPDATE_FILM_QUERY = "UPDATE FILMS SET NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, " +
@@ -36,23 +37,25 @@ public class DbFilmStorage implements FilmStorage {
     private static final String GET_ALL_FILMS_QUERY = "SELECT * FROM FILMS";
     private static final String INSERT_LIKE_QUERY = "INSERT INTO LIKES (USER_ID, FILM_ID) VALUES (?, ?)";
     private static final String DELETE_LIKE_QUERY = "DELETE FROM LIKES WHERE USER_ID = ? AND FILM_ID = ?";
-    private static final String GET_MOST_LIKED_FILMS_QUERY = "SELECT f.*, COUNT(l.USER_ID) AS AMOUNT\n" +
-            "FROM FILMS f \n" +
-            "LEFT JOIN LIKES l\n" +
-            "\tON f.ID = l.FILM_ID \n" +
-            "GROUP BY f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA_ID \n" +
-            "ORDER BY AMOUNT DESC, f.NAME ASC\n" +
+    private static final String GET_MOST_LIKED_FILMS_QUERY = "SELECT " +
+            "ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID " +
+            "FROM (SELECT f.*, COUNT(l.USER_ID) AS AMOUNT " +
+            "FROM FILMS f " +
+            "LEFT JOIN LIKES l " +
+            "ON f.ID = l.FILM_ID " +
+            "GROUP BY f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA_ID " +
+            "ORDER BY AMOUNT DESC, f.NAME ASC) " +
             "LIMIT ?";
     private static final String GET_FILM_LIKES = "SELECT USER_ID FROM LIKES WHERE FILM_ID = ?";
 
     @Autowired
-    MPAStorage mpaStorage;
+    private final MPAStorage mpaStorage;
 
     @Autowired
-    DBGenreStorage genreStorage;
+    private final DBGenreStorage genreStorage;
 
     @Autowired
-    JdbcTemplate jdbc;
+    private final JdbcTemplate jdbc;
 
     @Override
     public void addFilm(Film film) {
@@ -118,10 +121,7 @@ public class DbFilmStorage implements FilmStorage {
                     new Object[]{id},
                     new FilmRowMapper()
             );
-            for (Integer userId : getFilmLikes(film.getId())) {
-                film.likeFilm(userId);
-            }
-            film.setGenres(genreStorage.getFilmGenres(film.getId()));
+            fillUpFilmInfo(film);
         } catch (EmptyResultDataAccessException e) {
             log.info("Film with id = " + id + " not found.");
         }
@@ -131,10 +131,11 @@ public class DbFilmStorage implements FilmStorage {
     @Override
     public List<Film> getAllFilms() {
         log.trace("Level: Storage. Method: getFilmById.");
-        return parseRowSet(
-                jdbc.queryForRowSet(
-                        GET_ALL_FILMS_QUERY
-                ));
+        List<Film> allFilms = jdbc.query(GET_ALL_FILMS_QUERY, new FilmRowMapper());
+        for (Film film : allFilms) {
+            fillUpFilmInfo(film);
+        }
+        return allFilms;
     }
 
     @Override
@@ -156,46 +157,29 @@ public class DbFilmStorage implements FilmStorage {
     @Override
     public List<Film> getMostLikedFilms(int amount) {
         log.trace("Level: Storage. Method: getMostLikedFilms.");
-        return parseRowSet(
-                jdbc.queryForRowSet(
-                        GET_MOST_LIKED_FILMS_QUERY,
-                        new Object[]{amount}
-                ));
+        List<Film> mostLikedFilms = jdbc.query(GET_MOST_LIKED_FILMS_QUERY, new Object[]{amount}, new FilmRowMapper());
+        for (Film film : mostLikedFilms) {
+            fillUpFilmInfo(film);
+        }
+        return mostLikedFilms;
     }
 
     public Set<Integer> getFilmLikes(int filmId) {
         log.trace("Level: Storage. Method: getFilmById.");
-        Set<Integer> likesSet = new TreeSet<>();
-        SqlRowSet resultSet = jdbc.queryForRowSet(
-                GET_FILM_LIKES,
-                new Object[]{filmId}
+        return new TreeSet<>(
+                jdbc.queryForList(
+                        GET_FILM_LIKES,
+                        new Object[]{filmId},
+                        Integer.class)
         );
-        while (resultSet.next()) {
-            likesSet.add(
-                    resultSet.getInt(1)
-            );
-        }
-        return likesSet;
     }
 
-    private List<Film> parseRowSet(SqlRowSet resultSet) {
-        List<Film> allFilms = new ArrayList<>();
-        while (resultSet.next()) {
-            Film filmToAdd = new Film(
-                    resultSet.getInt(1),
-                    resultSet.getString(2),
-                    resultSet.getString(3),
-                    resultSet.getDate(4).toLocalDate(),
-                    resultSet.getLong(5),
-                    mpaStorage.getMPA(resultSet.getInt(6)).get()
-            );
-            filmToAdd.setGenres(genreStorage.getFilmGenres(resultSet.getInt(1)));
-            for (Integer userId : getFilmLikes(filmToAdd.getId())) {
-                filmToAdd.likeFilm(userId);
-            }
-            allFilms.add(filmToAdd);
+
+    private void fillUpFilmInfo(Film film) {
+        film.setGenres(genreStorage.getFilmGenres(film.getId()));
+        for (Integer userId : getFilmLikes(film.getId())) {
+            film.likeFilm(userId);
         }
-        return allFilms;
     }
 
     private class FilmRowMapper implements RowMapper<Film> {
