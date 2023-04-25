@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.services;
+package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,14 +9,9 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.utility.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.utility.exceptions.NullPayloadObjectException;
-import ru.yandex.practicum.filmorate.utility.exceptions.UserNotFoundException;
 
 import javax.validation.ValidationException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -29,7 +24,6 @@ public class FilmService {
     @Autowired
     private final UserStorage userStorage;
 
-    private static final FilmPopularityComparator popularityComparator = new FilmPopularityComparator();
 
     public Film addFilm(Film film) {
         if (film == null) {
@@ -43,7 +37,7 @@ public class FilmService {
     }
 
     public Film getFilm(int id) {
-        Film film = storage.getFilm(id);
+        Film film = storage.getFilmById(id);
         if (film == null) {
             throw new FilmNotFoundException("Film with id = " + id + " not found");
         }
@@ -52,15 +46,8 @@ public class FilmService {
 
     public Film likeFilm(int filmId, int userId) {
         log.trace("User " + userId + " liked film " + filmId);
-        Film film = storage.getFilm(filmId);
-        if (userStorage.getUser(userId) == null) {
-            throw new UserNotFoundException("User not fond");
-        }
-        if (film == null) {
-            throw new FilmNotFoundException("No such film");
-        }
-        film.likeFilm(userId);
-        return film;
+        storage.saveLike(userId, filmId);
+        return storage.getFilmById(filmId);
     }
 
     public List<Film> getAllFilms() {
@@ -79,6 +66,15 @@ public class FilmService {
         return film;
     }
 
+    public void dislikeFilm(int filmId, int userId) {
+        log.trace("User " + userId + " disliked film " + filmId);
+        storage.removeLike(userId, filmId);
+    }
+
+    public List<Film> getMostLikedFilms(int amount) {
+        return storage.getMostLikedFilms(amount);
+    }
+
     private void filmCheck(Film film) {
         if (film.getDuration() <= 0) {
             log.info("Duration must be positive");
@@ -86,33 +82,4 @@ public class FilmService {
         }
     }
 
-    public void dislikeFilm(int filmId, int userId) {
-        log.trace("User " + userId + " disliked film " + filmId);
-        Film film = storage.getFilm(filmId);
-        if (userStorage.getUser(userId) == null) {
-            throw new UserNotFoundException("User not fond");
-        }
-        if (film == null) {
-            throw new FilmNotFoundException("No such film");
-        }
-        film.dislikeFilm(userId);
-    }
-
-    public List<Film> getMostLikedFilms(int amount) {
-        Set<Film> sortedByLikes = new TreeSet<>(popularityComparator);
-        sortedByLikes.addAll(storage.getAllFilms());
-        return sortedByLikes.stream().limit(amount).collect(Collectors.toList());
-    }
-
-    static class FilmPopularityComparator implements Comparator<Film> {
-
-        @Override
-        public int compare(Film o1, Film o2) {
-            int comparsion = o2.getLikes().size() - o1.getLikes().size();
-            if (comparsion == 0) {
-                comparsion = o2.getName().compareTo(o1.getName());
-            }
-            return comparsion;
-        }
-    }
 }

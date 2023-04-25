@@ -1,33 +1,28 @@
 package ru.yandex.practicum.filmorate.model;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Set;
-import java.util.TreeSet;
-import java.time.Duration;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-import org.springframework.boot.convert.DurationUnit;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import ru.yandex.practicum.filmorate.utility.constraints.FilmReleaseConstraint;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 @Slf4j
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class Film {
 
-    private int id;
-
-    private final Set<Integer> likes = new TreeSet<>();
-
-    @DurationUnit(ChronoUnit.HOURS)
-    private Duration duration;
+    private int id = 0;
 
     @NonNull
     @NotBlank
@@ -39,10 +34,15 @@ public class Film {
     @FilmReleaseConstraint
     private LocalDate releaseDate;
 
-    public long getDuration() {
-        log.trace("Film {} duartion {} in minutes {}", this.id, this.duration, this.duration.toSeconds());
-        return this.duration.toSeconds();
-    }
+    // ЧЕРЕЗ DURATION НОРМАЛЬНО НЕ РАБОТАЕТ СДЕЛАНО ЧЕРЕЗ LONG!!!
+    @Positive
+    private long duration;
+
+    private MPA mpa;
+
+    private final List<Genre> genres = new ArrayList<>();
+
+    private final Set<Integer> likes = new TreeSet<>();
 
     public void likeFilm(int userId) {
         likes.add(userId);
@@ -52,4 +52,8 @@ public class Film {
         likes.remove(userId);
     }
 
+    public void setGenres(List<Genre> newGenres) {
+        this.genres.clear();
+        this.genres.addAll(newGenres);
+    }
 }
